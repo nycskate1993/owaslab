@@ -1,0 +1,1418 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="OWAS LAB: apresentação simples e interativa sobre o método OWAS, com quiz e flashcards.">
+<title>OWAS LAB — Tecnologia, Ergonomia e Fisioterapia</title>
+<style>
+:root{
+  --bg:#03060d; --bg2:#071126; --navy:#0b1a38; --card:rgba(12,27,56,.78); --card2:rgba(8,18,40,.9);
+  --line:rgba(56,189,248,.24); --line2:rgba(148,180,230,.18);
+  --cyan:#22d3ee; --blue:#3b82f6; --text:#e8f0ff; --muted:#a8bad8;
+  --c1:#34d399; --c2:#facc15; --c3:#fb923c; --c4:#f87171;
+  --radius:16px; --glow:0 0 28px rgba(34,211,238,.16);
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:auto;-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;color:var(--text);font:17px/1.65 var(--sans);
+  background:radial-gradient(1100px 560px at 85% -8%,rgba(59,130,246,.20),transparent 62%),
+             radial-gradient(900px 520px at -8% 18%,rgba(34,211,238,.11),transparent 60%),var(--bg);}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.55;
+  background-image:linear-gradient(rgba(56,189,248,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.055) 1px,transparent 1px);
+  background-size:46px 46px;mask-image:linear-gradient(to bottom,#000 0,transparent 85%);-webkit-mask-image:linear-gradient(to bottom,#000 0,transparent 85%)}
+a{color:var(--cyan)}
+h1,h2,h3{line-height:1.2;letter-spacing:.01em;margin:0 0 .5em}
+h1{font-size:clamp(1.9rem,4.2vw,2.8rem)} h2{font-size:clamp(1.3rem,2.6vw,1.7rem)} h3{font-size:1.15rem}
+p{margin:0 0 1em} ul,ol{padding-left:1.2em;margin:0 0 1em} li{margin:.25em 0}
+.muted{color:var(--muted)} .mono{font-family:var(--mono)}
+.skip{position:absolute;left:-999px;top:8px;background:var(--cyan);color:#021018;padding:10px 14px;border-radius:8px;z-index:100;font-weight:700}
+.skip:focus{left:8px}
+:focus-visible{outline:3px solid var(--cyan);outline-offset:3px;border-radius:6px}
+h1[tabindex="-1"]:focus,main:focus,.refs li:focus{outline:none}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- cabeçalho ---------- */
+.site-header{position:sticky;top:0;z-index:40;background:rgba(3,8,20,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:10px 18px;max-width:1280px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px;min-height:44px;text-decoration:none;color:var(--text);font-weight:800;letter-spacing:.14em;font-size:1.05rem}
+.brand b{color:var(--cyan)}
+.now{flex:1;min-width:150px;color:var(--muted);font-size:.95rem;display:flex;gap:10px;align-items:baseline}
+.now #nowIdx{font-family:var(--mono);color:var(--cyan)}
+.tools{display:flex;flex-wrap:wrap;gap:8px}
+.tabs-nav{display:none;border-top:1px solid var(--line2);overflow-x:auto;scrollbar-width:thin}
+.tabs-nav ol{list-style:none;display:flex;gap:4px;margin:0;padding:6px 18px;max-width:1280px;margin-inline:auto}
+.tabs-nav a{display:flex;gap:7px;align-items:center;white-space:nowrap;padding:8px 12px;border-radius:10px;color:var(--muted);text-decoration:none;font-size:.92rem;border:1px solid transparent;min-height:40px}
+.tabs-nav a i{font-style:normal;font-family:var(--mono);font-size:.78rem;color:var(--cyan);opacity:.85}
+.tabs-nav a:hover{color:var(--text);border-color:var(--line)}
+.tabs-nav a[aria-current="page"]{color:#021018;background:linear-gradient(135deg,var(--cyan),#60a5fa);font-weight:700}
+.tabs-nav a[aria-current="page"] i{color:#021018}
+.progress-top{height:3px;background:rgba(148,180,230,.12)}
+.progress-top i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan));box-shadow:0 0 12px var(--cyan);transition:width .35s ease}
+@media(min-width:1000px){.tabs-nav{display:block}}
+
+.menu-panel{position:fixed;inset:0;top:0;z-index:60;background:rgba(2,6,16,.94);overflow:auto;padding:84px 18px 40px}
+.menu-panel[hidden]{display:none}
+.menu-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.menu-grid a{display:block;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--text);text-decoration:none}
+.menu-grid a:hover{border-color:var(--cyan);box-shadow:var(--glow)}
+.menu-grid a[aria-current="page"]{border-color:var(--cyan);background:rgba(34,211,238,.12)}
+.menu-grid small{display:block;color:var(--muted);margin-top:4px;line-height:1.35}
+.menu-grid i{font-style:normal;font-family:var(--mono);color:var(--cyan);margin-right:8px}
+.menu-close{position:fixed;top:14px;right:16px;z-index:70}
+
+/* ---------- botões ---------- */
+.btn{font:inherit;font-weight:650;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:9px 18px;border-radius:12px;border:1px solid var(--line);background:rgba(12,27,56,.7);color:var(--text);cursor:pointer;text-decoration:none;transition:transform .15s,box-shadow .2s,border-color .2s,background .2s}
+.btn:hover{border-color:var(--cyan);box-shadow:var(--glow)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:linear-gradient(135deg,var(--cyan),#60a5fa);color:#021018;border-color:transparent}
+.btn.ghost{background:transparent}
+.btn.small{min-height:40px;padding:6px 12px;font-size:.92rem}
+.btn.icon{min-width:44px;padding:6px 10px;font-size:1.3rem;line-height:1}
+.btn[disabled],.btn[aria-disabled="true"]{opacity:.45;cursor:not-allowed;box-shadow:none}
+.btn[aria-pressed="true"]{background:rgba(34,211,238,.18);border-color:var(--cyan)}
+
+/* ---------- layout ---------- */
+main{position:relative;z-index:1}
+.page{animation:fade .45s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 18px}
+.page-head{margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--line2)}
+.kicker{font-family:var(--mono);color:var(--cyan);font-size:.85rem;letter-spacing:.16em;text-transform:uppercase;margin:0 0 8px}
+.lead{font-size:1.12rem;color:#cfe0fb;max-width:70ch}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;position:relative;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.card::before{content:"";position:absolute;left:14px;right:14px;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.55}
+.card h2,.card h3{margin-top:0}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;border:1px solid var(--line);font-size:.85rem;color:var(--muted);background:rgba(8,18,40,.7)}
+.badge{display:inline-block;font-size:.78rem;font-weight:700;letter-spacing:.04em;padding:3px 10px;border-radius:999px;border:1px solid}
+.badge.ok{color:var(--c1);border-color:rgba(52,211,153,.5);background:rgba(52,211,153,.1)}
+.badge.fut{color:var(--c2);border-color:rgba(250,204,21,.5);background:rgba(250,204,21,.08)}
+.callout{border-left:4px solid var(--cyan);background:rgba(34,211,238,.08);padding:14px 18px;border-radius:0 12px 12px 0;margin:0 0 18px}
+.callout.warn{border-color:var(--c2);background:rgba(250,204,21,.08)}
+.callout strong{color:#fff}
+.cite{font-size:.78em;text-decoration:none;font-family:var(--mono);padding:0 1px}
+.cite:hover{text-decoration:underline}
+details{border:1px solid var(--line2);border-radius:12px;padding:10px 14px;margin:10px 0;background:rgba(8,18,40,.55)}
+summary{cursor:pointer;font-weight:650;min-height:32px}
+.pager{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:34px;padding-top:18px;border-top:1px solid var(--line2)}
+
+/* ---------- tabelas ---------- */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:.97rem}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line2);vertical-align:top}
+th{background:rgba(34,211,238,.1);font-weight:700;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:center;font-family:var(--mono)}
+.codebox{display:inline-flex;gap:6px;font-family:var(--mono);font-size:1.7rem;font-weight:800}
+.codebox span{min-width:2.2ch;text-align:center;padding:6px 10px;border:1px solid var(--cyan);border-radius:10px;background:rgba(34,211,238,.1);color:var(--cyan)}
+.codebox span.empty{border-style:dashed;color:var(--muted);border-color:var(--line2);background:transparent}
+
+/* categorias */
+.cat1{--cc:var(--c1)} .cat2{--cc:var(--c2)} .cat3{--cc:var(--c3)} .cat4{--cc:var(--c4)}
+.cat-card{border-color:color-mix(in srgb,var(--cc) 55%,transparent)}
+.cat-card::before{background:linear-gradient(90deg,transparent,var(--cc),transparent)}
+.cat-num{font-family:var(--mono);font-size:2.4rem;font-weight:800;color:var(--cc);line-height:1}
+.cell{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;font-family:var(--mono);font-weight:800;color:#041018;background:var(--cc)}
+.matrix td,.matrix th{padding:6px;text-align:center}
+.matrix td.rowh,.matrix th.rowh{text-align:left;white-space:nowrap;font-size:.9rem}
+.matrix td.sel .cell{outline:3px solid #fff;outline-offset:2px;box-shadow:0 0 14px #fff}
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+.legend span{display:inline-flex;align-items:center;gap:8px;font-size:.9rem}
+.legend .cell{width:26px;height:26px;font-size:.85rem}
+
+/* tabs internas */
+.subtabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+.subtabs button{font:inherit;min-height:44px;padding:8px 16px;border-radius:12px;border:1px solid var(--line);background:rgba(8,18,40,.7);color:var(--muted);cursor:pointer;font-weight:650}
+.subtabs button[aria-selected="true"]{background:linear-gradient(135deg,var(--cyan),#60a5fa);color:#021018;border-color:transparent}
+.subtabs button:hover{border-color:var(--cyan);color:var(--text)}
+.subtabs button[aria-selected="true"]:hover{color:#021018}
+
+/* capa */
+.hero{display:grid;gap:30px;grid-template-columns:1.1fr .9fr;align-items:center;min-height:62vh}
+@media(max-width:860px){.hero{grid-template-columns:1fr}.hero-fig{order:-1;max-width:300px;margin-inline:auto}}
+.logo-title{font-size:clamp(3rem,9vw,5.6rem);letter-spacing:.12em;margin:0;font-weight:900;text-shadow:0 0 34px rgba(34,211,238,.35)}
+.logo-title span{color:var(--cyan)}
+.subtitle{font-size:clamp(1.1rem,2.4vw,1.5rem);color:#cfe0fb;margin:.2em 0 1em;letter-spacing:.04em}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin:22px 0}
+.stats{list-style:none;display:flex;flex-wrap:wrap;gap:10px;padding:0;margin:8px 0 0}
+.stats li{margin:0;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(8,18,40,.7);min-width:104px}
+.stats b{display:block;font-family:var(--mono);color:var(--cyan);font-size:1.5rem;line-height:1.1}
+.stats span{font-size:.82rem;color:var(--muted)}
+.hero-fig{margin:0;position:relative;border:1px solid var(--line);border-radius:22px;background:radial-gradient(circle at 50% 30%,rgba(34,211,238,.13),rgba(8,18,40,.85) 70%);padding:12px 12px 8px;box-shadow:var(--glow)}
+.hero-fig svg{width:100%;height:auto;display:block}
+.hero-fig figcaption{font-size:.82rem;color:var(--muted);text-align:center;padding:4px 6px 6px}
+.fig-tag{font-family:var(--mono);fill:var(--cyan);font-size:13px}
+.scan{animation:scan 3.6s linear infinite}
+@keyframes scan{0%{transform:translateY(0);opacity:0}10%{opacity:.9}90%{opacity:.9}100%{transform:translateY(300px);opacity:0}}
+.trunk{transform-origin:160px 214px;transition:transform .9s cubic-bezier(.4,0,.2,1)}
+.hero-fig[data-back="1"] .trunk{transform:rotate(0)}
+.hero-fig[data-back="2"] .trunk{transform:rotate(34deg)}
+.hero-fig[data-back="3"] .trunk{transform:rotate(-22deg)}
+.credits-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+label.f{display:block;font-weight:650;font-size:.92rem;margin-bottom:4px}
+input[type=text],input[type=number],select,textarea{width:100%;font:inherit;color:var(--text);background:rgba(3,10,26,.9);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
+input::placeholder{color:#7f93b6}
+.credit-line{margin:14px 0 0;font-size:1.02rem;color:#dbe8ff}
+.credit-line:empty{display:none}
+
+/* linha do tempo */
+.timeline{list-style:none;margin:0;padding:0 0 0 22px;border-left:2px solid var(--line)}
+.timeline li{position:relative;margin:0 0 18px;padding:0 0 0 16px}
+.timeline li::before{content:"";position:absolute;left:-30px;top:6px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:3px solid var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.timeline .y{font-family:var(--mono);color:var(--cyan);font-weight:800;font-size:1.15rem}
+.timeline h3{margin:2px 0 4px;font-size:1.05rem}
+
+/* stepper */
+.stepper{display:grid;gap:18px;grid-template-columns:300px 1fr}
+@media(max-width:860px){.stepper{grid-template-columns:1fr}}
+.steplist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.steplist button{width:100%;text-align:left;font:inherit;display:flex;gap:10px;align-items:center;min-height:48px;padding:8px 12px;border-radius:12px;border:1px solid var(--line2);background:rgba(8,18,40,.6);color:var(--text);cursor:pointer}
+.steplist button i{font-style:normal;font-family:var(--mono);color:var(--cyan);min-width:1.6em}
+.steplist button[aria-current="step"]{border-color:var(--cyan);background:rgba(34,211,238,.14);box-shadow:var(--glow)}
+.steplist button.done i::after{content:" ✓"}
+.bar-prog{height:8px;border-radius:99px;background:rgba(148,180,230,.15);overflow:hidden}
+.bar-prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width .3s}
+
+/* simulador */
+.radiogroup{border:1px solid var(--line2);border-radius:14px;padding:12px 14px;margin:0 0 14px;background:rgba(8,18,40,.5)}
+.radiogroup legend{font-weight:750;padding:0 8px;color:var(--cyan)}
+.radiogroup .opts{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.opt-radio{position:relative}
+.opt-radio input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0;width:100%;height:100%}
+.opt-radio > span{display:flex;gap:10px;align-items:flex-start;min-height:48px;padding:9px 12px;border:1px solid var(--line2);border-radius:12px;background:rgba(3,10,26,.7);font-size:.97rem;line-height:1.35}
+.opt-radio > span b{font-family:var(--mono);color:var(--cyan);min-width:1.1em}
+.opt-radio input:checked + span{border-color:var(--cyan);background:rgba(34,211,238,.16);box-shadow:var(--glow)}
+.opt-radio input:focus-visible + span{outline:3px solid var(--cyan);outline-offset:2px}
+.opt-radio:hover > span{border-color:var(--cyan)}
+.result-panel{min-height:170px}
+.bars .row{display:grid;grid-template-columns:110px 1fr 70px;gap:10px;align-items:center;margin:6px 0;font-size:.95rem}
+.bars .track{height:14px;border-radius:99px;background:rgba(148,180,230,.14);overflow:hidden}
+.bars .track i{display:block;height:100%;background:var(--cc,var(--cyan));width:0;transition:width .4s}
+.samples{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.samples .s{font-family:var(--mono);padding:3px 9px;border-radius:8px;border:1px solid var(--cc);color:var(--cc);font-size:.9rem}
+
+/* jogos */
+.hud{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:14px}
+.hud .stat{padding:8px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(8,18,40,.7);font-family:var(--mono)}
+.hud .stat b{color:var(--cyan)}
+.qtext{font-size:1.25rem;font-weight:650;margin:10px 0 16px}
+.scenario{border:1px dashed var(--line);border-radius:12px;padding:12px 16px;margin:0 0 14px;background:rgba(3,10,26,.55)}
+.options{display:grid;gap:10px}
+.opt{font:inherit;text-align:left;display:flex;gap:12px;align-items:flex-start;width:100%;min-height:52px;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(8,18,40,.75);color:var(--text);cursor:pointer;transition:border-color .15s,background .15s}
+.opt .ltr{font-family:var(--mono);font-weight:800;color:var(--cyan);min-width:1.4em}
+.opt:hover:not(.locked){border-color:var(--cyan);background:rgba(34,211,238,.1)}
+.opt.locked{cursor:default}
+.opt.right{border-color:var(--c1);background:rgba(52,211,153,.14)}
+.opt.wrong{border-color:var(--c4);background:rgba(248,113,113,.14)}
+.opt .mark{margin-left:auto;font-weight:800;white-space:nowrap}
+.feedback{margin-top:14px;padding:14px 16px;border-radius:12px;border:1px solid var(--line)}
+.feedback.ok{border-color:var(--c1);background:rgba(52,211,153,.1)}
+.feedback.bad{border-color:var(--c4);background:rgba(248,113,113,.1)}
+.result-big{font-family:var(--mono);font-size:3rem;font-weight:800;color:var(--cyan);line-height:1}
+
+/* flashcards */
+.fc-wrap{display:grid;gap:16px;max-width:820px;margin:0 auto}
+.fc-card{perspective:1200px;width:100%;min-height:290px;background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer;text-align:center}
+.fc-inner{position:relative;width:100%;min-height:290px;transition:transform .6s;transform-style:preserve-3d}
+.fc-card.flipped .fc-inner{transform:rotateY(180deg)}
+.fc-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px 26px;border-radius:20px;border:1px solid var(--line);background:linear-gradient(160deg,rgba(14,32,66,.95),rgba(6,14,32,.95));box-shadow:var(--glow)}
+.fc-face.back{transform:rotateY(180deg);border-color:var(--cyan)}
+.fc-face .tag{font-family:var(--mono);font-size:.8rem;color:var(--cyan);letter-spacing:.12em;text-transform:uppercase}
+.fc-face .txt{font-size:1.28rem;line-height:1.5}
+.fc-face .hint{font-size:.85rem;color:var(--muted)}
+.fc-ctrl{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.fc-filter{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.fc-filter > div{flex:1;min-width:200px}
+.fc-stats{display:flex;flex-wrap:wrap;gap:14px;justify-content:space-between;align-items:center}
+.fc-empty{padding:40px 20px;text-align:center;border:1px dashed var(--line);border-radius:18px}
+
+/* tutor */
+.chat{border:1px solid var(--line);border-radius:16px;background:rgba(3,10,26,.7);display:flex;flex-direction:column;max-height:560px}
+.chat-log{overflow:auto;padding:16px;display:flex;flex-direction:column;gap:12px;min-height:220px}
+.msg{max-width:88%;padding:10px 14px;border-radius:14px;line-height:1.5}
+.msg.bot{background:rgba(34,211,238,.1);border:1px solid var(--line);align-self:flex-start}
+.msg.me{background:rgba(59,130,246,.25);border:1px solid rgba(96,165,250,.5);align-self:flex-end}
+.chat-form{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line2)}
+.chat-form input{flex:1}
+.sugg{display:flex;flex-wrap:wrap;gap:8px;padding:0 12px 12px}
+.sugg button{font:inherit;font-size:.9rem;min-height:40px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(8,18,40,.8);color:var(--text);cursor:pointer}
+.sugg button:hover{border-color:var(--cyan)}
+
+/* referências */
+.refs{list-style:none;padding:0;margin:0}
+.refs li{margin:0 0 12px;padding:14px 16px;border:1px solid var(--line2);border-radius:12px;background:rgba(8,18,40,.6);display:grid;grid-template-columns:44px 1fr;gap:6px 12px}
+.refs li.hl{border-color:var(--cyan);box-shadow:var(--glow)}
+.refs li>div{min-width:0;overflow-wrap:anywhere}
+.refs .n{font-family:var(--mono);font-weight:800;color:var(--cyan);font-size:1.15rem}
+.refs .meta{font-size:.92rem;color:var(--muted);margin-top:4px}
+
+/* rodapé / apresentação */
+.site-foot{position:relative;z-index:1;text-align:center;color:var(--muted);font-size:.85rem;padding:24px 16px 90px;border-top:1px solid var(--line2);margin-top:20px}
+.site-foot b{color:var(--cyan);letter-spacing:.14em}
+.pres-bar{display:none;position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:50;gap:8px;padding:8px;border:1px solid var(--line);border-radius:16px;background:rgba(3,8,20,.92);backdrop-filter:blur(8px)}
+body.presenting .pres-bar{display:flex}
+body.presenting .site-header .bar,body.presenting .tabs-nav{display:none}
+body.presenting{font-size:20px}
+body.presenting .wrap{max-width:1060px}
+body.presenting .page{min-height:calc(100vh - 80px)}
+body.presenting .pager{display:none}
+.toast{position:fixed;left:50%;top:76px;transform:translateX(-50%);z-index:90;background:#0e2a52;border:1px solid var(--cyan);padding:10px 16px;border-radius:12px;max-width:90vw;box-shadow:var(--glow)}
+.toast[hidden]{display:none}
+.print-only{display:none}
+
+@media(max-width:600px){
+  .site-header{position:static}
+  body{font-size:16px}.wrap{padding:20px 14px}.bar{padding:8px 12px}
+  .tools .btn{padding:6px 12px;min-height:44px;font-size:.92rem}
+  .bars .row{grid-template-columns:84px 1fr 56px}
+  .refs li{grid-template-columns:34px 1fr}
+  .fc-face .txt{font-size:1.1rem}
+  .card{padding:16px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .fc-inner{transition:none}
+}
+
+/* ---------- impressão ---------- */
+@media print{
+  :root{--text:#0b1220;--muted:#37465f}
+  html,body{background:#fff!important;color:#0b1220!important;font-size:11.5pt}
+  body::before,.no-print,.site-header,.site-foot,.pres-bar,.menu-panel,.toast,.pager,.cta,.btn,.subtabs{display:none!important}
+  .print-only{display:block!important}
+  .page[hidden]{display:block!important}
+  .page{page-break-before:always;break-before:page;animation:none}
+  .page#page-inicio{page-break-before:avoid;break-before:avoid}
+  .page.interactive-only .wrap > *:not(.page-head):not(.print-only){display:none!important}
+  .wrap{max-width:none;padding:0 0 8mm}
+  .card,.refs li,.callout,details,.scenario,.tablewrap,.timeline li{break-inside:avoid;page-break-inside:avoid;background:#fff!important;border:1px solid #9bb0cf!important;box-shadow:none!important;color:#0b1220!important}
+  .card::before{display:none}
+  h1,h2,h3,.lead,.subtitle,.logo-title,.logo-title span,.kicker,.cite,a{color:#0b1220!important;text-shadow:none!important}
+  a{text-decoration:none}
+  th{background:#e5eefc!important;color:#0b1220!important}
+  .cell{color:#000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .hero{min-height:0;grid-template-columns:1fr}.hero-fig{display:none}
+  details{display:block} details > *{display:block!important}
+  .fc-print li{break-inside:avoid;margin:0 0 6px}
+  .stepper,.grid,.grid.two{display:block}.grid > *{margin-bottom:10px}
+  .steplist{display:none}
+  .stepper > div[id]{display:none}
+  .tabpanel[hidden]{display:block!important}
+  .tabpanel{margin-bottom:10px}
+  .no-print-wide,#matrixTabs{display:none!important}
+  #creditsCard .credits-grid,#creditsCard p.muted{display:none!important}
+  #creditsCard{margin-top:12mm}
+  .refs li{display:block}
+}
+
+/* ===== versão simples ===== */
+body{font-size:19px}
+.lead{font-size:1.25rem}
+.btn.big{min-height:54px;padding:12px 26px;font-size:1.1rem}
+.tiles{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.tiles a{display:flex;flex-direction:column;gap:4px;padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--card);color:var(--text);text-decoration:none;min-height:96px;transition:border-color .2s,box-shadow .2s,transform .15s}
+.tiles a:hover{border-color:var(--cyan);box-shadow:var(--glow);transform:translateY(-2px)}
+.tiles a i{font-style:normal;font-family:var(--mono);color:var(--cyan);font-size:.9rem}
+.tiles a strong{font-size:1.2rem}
+.tiles a small{color:var(--muted);font-size:.95rem;line-height:1.35}
+.tiles a.hot{border-color:var(--cyan);background:rgba(34,211,238,.1)}
+.bigicon{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;border:1px solid var(--cyan);color:var(--cyan);font-family:var(--mono);font-weight:800;font-size:1.3rem;margin-bottom:10px}
+.parte h2{margin-bottom:6px}
+.parte ul{margin:0;padding-left:1.1em;color:var(--muted)}
+.passos{list-style:none;counter-reset:p;margin:0;padding:0;display:grid;gap:12px}
+.passos li{counter-increment:p;position:relative;margin:0;padding:16px 18px 16px 72px;border:1px solid var(--line);border-radius:16px;background:var(--card);min-height:70px}
+.passos li::before{content:counter(p);position:absolute;left:16px;top:14px;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:800;font-size:1.2rem;color:#021018;background:linear-gradient(135deg,var(--cyan),#60a5fa)}
+.passos strong{display:block;font-size:1.15rem}
+.passos span{color:#cfe0fb}
+.nivel{border-color:color-mix(in srgb,var(--cc) 60%,transparent)}
+.nivel::before{background:linear-gradient(90deg,transparent,var(--cc),transparent)}
+.nivel .cat-num{font-size:3rem}
+.nivel .tagc{display:inline-block;margin-left:8px;color:var(--cc);font-weight:700}
+.ex{display:flex;flex-direction:column;gap:10px}
+.ex .lv{display:inline-flex;align-items:center;gap:10px;font-weight:700;color:var(--cc)}
+.ex .lv .cell{width:38px;height:38px;font-size:1.2rem}
+.pager{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:34px;padding-top:18px;border-top:1px solid var(--line2)}
+.pager a{min-height:54px}
+.fc-card,.fc-inner{min-height:320px}
+.fc-face .txt{font-size:1.45rem}
+.fc-face .txt b{font-weight:700}
+.quiz-q{font-size:1.45rem;font-weight:650;margin:10px 0 18px}
+.opt{font-size:1.1rem;min-height:60px}
+@media(max-width:600px){body{font-size:17px}.fc-face .txt{font-size:1.2rem}.btn.big{width:100%}}
+@media print{
+  #creditsCard{display:none!important}
+  .tiles{display:none}
+  .page.interactive-only .wrap > *:not(.page-head):not(.print-only){display:none!important}
+}
+body.presenting{font-size:22px}
+
+.fc-card{display:block;width:100%}
+.fc-inner{display:block}
+.fc-face{width:100%}
+
+/* ---------- v2b: equipe, figuras, atalhos e dados ---------- */
+.byline{margin:16px 0 4px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:rgba(8,18,40,.6)}
+.team-names{margin:0;font-size:1.02rem;line-height:1.6;color:#dbe8ff}
+.dev{margin:10px 0 0;font-size:.95rem;color:var(--muted)}
+.dev strong{color:var(--text)}
+.site-foot .dev,.site-foot strong{color:#dbe8ff}
+.figgrid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));margin:10px 0 18px}
+.figgrid.cases{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.fig{margin:0;border:1px solid var(--line);border-radius:16px;background:var(--card);padding:10px;display:flex;flex-direction:column;gap:6px}
+.fig .figsvg{border-radius:12px;background:radial-gradient(circle at 50% 30%,rgba(34,211,238,.10),rgba(3,10,26,.7) 70%)}
+.fig svg{display:block;width:100%;height:auto;max-height:230px}
+.fig figcaption{display:flex;flex-direction:column;gap:3px;padding:2px 4px 4px}
+.fig figcaption strong{font-size:1.02rem;line-height:1.3}
+.fig figcaption span{color:var(--muted);font-size:.9rem;line-height:1.4}
+.fig.case{border-color:color-mix(in srgb,var(--cc) 55%,transparent)}
+.fig .lv{display:inline-flex;align-items:center;gap:8px;font-weight:700;color:var(--cc);margin-top:4px;font-size:.95rem}
+.fig .lv .cell{width:30px;height:30px}
+.onpage{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:-6px 0 22px}
+.onpage span{font-size:.85rem;color:var(--muted);margin-right:4px}
+.onpage a{min-height:44px;display:inline-flex;align-items:center;padding:6px 14px;border-radius:999px;border:1px solid var(--line);color:var(--text);text-decoration:none;font-size:.95rem;background:rgba(8,18,40,.7)}
+.onpage a:hover{border-color:var(--cyan);box-shadow:var(--glow)}
+[data-sec]{scroll-margin-top:96px}
+@media(min-width:1000px){[data-sec]{scroll-margin-top:150px}}
+@media(max-width:600px){[data-sec]{scroll-margin-top:12px}}
+.flash{animation:flash 1.6s ease}
+@keyframes flash{0%,40%{box-shadow:0 0 0 3px var(--cyan),0 0 24px rgba(34,211,238,.5)}100%{box-shadow:0 0 0 0 transparent}}
+.check{list-style:none;padding:0;margin:0 0 1em;display:grid;gap:8px}
+.check li{position:relative;margin:0;padding:12px 14px 12px 50px;border:1px solid var(--line2);border-radius:12px;background:rgba(8,18,40,.6)}
+.check li::before{content:"✓";position:absolute;left:14px;top:11px;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#021018;background:var(--cyan);font-weight:800;font-size:.9rem}
+.ficha td:last-child,.ficha th:last-child{text-align:center}
+.ficha .cell{width:34px;height:34px}
+.bars.wide .row{grid-template-columns:80px 1fr 130px}
+.stats.big li{flex:1;min-width:190px}
+.stats.big b{font-size:1.7rem}
+.stats.big span{font-size:.92rem;line-height:1.35;display:block}
+.to-top{position:fixed;right:16px;bottom:16px;z-index:45;min-height:48px;padding:8px 18px;border-radius:999px;border:1px solid var(--cyan);background:rgba(3,8,20,.94);color:var(--text);font:inherit;font-weight:700;cursor:pointer;box-shadow:var(--glow)}
+.to-top[hidden]{display:none}
+body.presenting .to-top{bottom:84px}
+.print-credit{text-align:center;font-size:10pt;margin-top:8mm}
+@media(max-width:600px){.bars.wide .row{grid-template-columns:62px 1fr 104px;font-size:.88rem}.figgrid{grid-template-columns:repeat(2,1fr)}.figgrid.cases{grid-template-columns:1fr 1fr}}
+@media print{.onpage,.to-top{display:none!important}.byline{border:1px solid #9bb0cf;background:#fff}.team-names,.dev,.dev strong{color:#0b1220!important}.fig{break-inside:avoid;background:#fff!important;border:1px solid #9bb0cf!important}.figgrid{grid-template-columns:repeat(3,1fr)}.bars .track{border:1px solid #9bb0cf}.bars .track i{-webkit-print-color-adjust:exact;print-color-adjust:exact}.ficha .cell{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+
+/* ---------- impressão / PDF: tudo claro e legível ---------- */
+@media print{
+  html,body{font-size:10.5pt!important;line-height:1.45}
+  .wrap{padding:0 0 4mm!important}
+  .page-head{margin-bottom:8px;padding-bottom:6px}
+  .card,.passos li,.check li,.stats li,.fig,.nivel,.ex,.byline,.tablewrap,.callout,.hud .stat,.refs li,details{background:#fff!important;color:#0b1220!important;border:1px solid #9bb0cf!important;box-shadow:none!important}
+  .callout{border-left:4px solid #0b6e99!important}
+  .card{padding:10px!important}
+  strong,b,.callout strong,.passos strong,.passos span,.check li,.fig figcaption strong,.fig figcaption span,.team-names,.lead,p,li,td,th,h1,h2,h3,summary{color:#0b1220!important}
+  .muted,.onpage span,figcaption{color:#37465f!important}
+  .stats b,.cat-num,.bigicon,.kicker,.timeline .y,.refs .n{color:#0b6e99!important}
+  .bigicon{border-color:#0b6e99!important}
+  .passos li{padding:8px 12px 8px 58px!important;min-height:0!important}
+  .passos li::before{width:34px;height:34px;left:12px;top:8px;color:#fff!important;background:#0b6e99!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .check li{padding:8px 12px 8px 44px!important}
+  .check li::before{background:#0b6e99!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .bars .track{background:#e5eefc!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .bars .row{color:#0b1220!important}
+  .fig .figsvg{background:#eef5ff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .fig svg{max-height:150px}
+  .fig svg polyline[stroke="#22d3ee"],.fig svg circle[stroke="#22d3ee"]{stroke:#0b6e99!important}
+  .fig svg polyline[stroke="#7fb6d8"],.fig svg g[stroke="#7fb6d8"]{stroke:#5b8db0!important}
+  .fig svg circle[fill="#22d3ee"]{fill:#0b6e99!important}
+  .fig svg [stroke="#facc15"]{stroke:#b45309!important}
+  .fig svg text{fill:#7c3a06!important}
+  .figgrid,.figgrid.cases{grid-template-columns:repeat(4,1fr)!important;gap:8px}
+  .fig .lv{color:#0b1220!important}
+  .tiles,.hero-fig{display:none!important}
+  .ficha th{background:#e5eefc!important}
+  .nivel .tagc{color:#0b1220!important}
+}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Pular para o conteúdo</a>
+
+<header class="site-header no-print" id="siteHeader">
+  <div class="bar">
+    <a class="brand" href="#/inicio" aria-label="OWAS LAB — ir para o início">
+      <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><polygon points="16,2 28,9 28,23 16,30 4,23 4,9" fill="none" stroke="#22d3ee" stroke-width="2"/><circle cx="16" cy="11" r="2.4" fill="#22d3ee"/><path d="M16 14v7M16 17l-4 3M16 17l4 3M16 21l-3 5M16 21l3 5" stroke="#22d3ee" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>
+      <span>OWAS <b>LAB</b></span>
+    </a>
+    <div class="now" aria-live="polite"><span id="nowIdx">1/9</span><span id="nowTitle">Início</span></div>
+    <div class="tools" role="toolbar" aria-label="Ferramentas">
+      <button class="btn ghost icon" id="btnPrev" type="button" aria-label="Página anterior" title="Anterior (←)">‹</button>
+      <button class="btn ghost icon" id="btnNext" type="button" aria-label="Próxima página" title="Próxima (→)">›</button>
+      <button class="btn ghost" id="btnMenu" type="button" aria-expanded="false" aria-controls="menuPanel">Menu</button>
+      <button class="btn ghost" id="btnPresent" type="button" aria-pressed="false">Apresentar</button>
+      <button class="btn ghost" id="btnFull" type="button">Tela cheia</button>
+      <button class="btn ghost" id="btnPrint" type="button">Imprimir / PDF</button>
+    </div>
+  </div>
+  <nav class="tabs-nav" aria-label="Páginas"><ol id="navList"></ol></nav>
+  <div class="progress-top" aria-hidden="true"><i id="topProgress"></i></div>
+</header>
+
+<div id="menuPanel" class="menu-panel no-print" hidden role="dialog" aria-modal="true" aria-label="Todas as páginas">
+  <button class="btn menu-close" id="menuClose" type="button">Fechar ✕</button>
+  <div class="menu-grid" id="menuGrid"></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<main id="main" tabindex="-1">
+
+<!-- 1 INÍCIO -->
+<section class="page" id="page-inicio" hidden>
+  <div class="wrap hero">
+    <div>
+      <p class="kicker">Laboratório digital de ergonomia</p>
+      <h1 class="logo-title" tabindex="-1">OWAS <span>LAB</span></h1>
+      <p class="subtitle">Tecnologia, Ergonomia e Fisioterapia</p>
+      <p class="lead">Como observar a postura de quem trabalha e decidir o que melhorar primeiro. Uma apresentação rápida sobre o método OWAS.</p>
+      <div class="byline" id="byline">
+        <p class="kicker" style="margin:0 0 6px">Feito por:</p>
+        <p class="team-names" id="teamNames"></p>
+        <p class="dev">Desenvolvido por <strong>Vitor Guilherme de Almeida Borda de Souza</strong>®</p>
+      </div>
+      <div class="cta">
+        <a class="btn primary big" id="ctaStart" href="#/o-que-e">Começar</a>
+        <a class="btn big" href="#/quiz">Jogar o quiz</a>
+        <a class="btn big" href="#/flashcards">Flashcards</a>
+      </div>
+    </div>
+    <figure class="hero-fig no-print" id="heroFig" data-back="1">
+      <svg viewBox="0 0 320 380" role="img" aria-labelledby="figTitle figDesc">
+        <title id="figTitle">Figura esquemática de postura</title>
+        <desc id="figDesc">Figura humana estilizada cujo tronco alterna entre reto, inclinado para a frente e inclinado de lado. É só uma ilustração animada.</desc>
+        <defs><linearGradient id="gl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22d3ee" stop-opacity="0"/><stop offset=".5" stop-color="#22d3ee" stop-opacity=".55"/><stop offset="1" stop-color="#22d3ee" stop-opacity="0"/></linearGradient></defs>
+        <g stroke="rgba(56,189,248,.25)" stroke-width="1" fill="none"><rect x="22" y="22" width="276" height="336" rx="14"/><path d="M22 300H298M160 22V358" stroke-dasharray="4 6"/></g>
+        <g stroke="#22d3ee" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none">
+          <path d="M160 214L136 288L132 336"/><path d="M160 214L184 288L188 336"/>
+          <g class="trunk"><path d="M160 214V122"/><circle cx="160" cy="98" r="19" fill="rgba(34,211,238,.18)"/><path d="M160 138L124 188"/><path d="M160 138L196 188"/></g>
+        </g>
+        <g fill="#22d3ee"><circle cx="160" cy="214" r="6"/></g>
+        <rect class="scan" x="30" y="30" width="260" height="46" fill="url(#gl)"/>
+        <text class="fig-tag" x="34" y="48" id="figTag">COSTAS RETAS</text>
+        <text class="fig-tag" x="34" y="350" style="opacity:.7">ILUSTRATIVO</text>
+      </svg>
+      <figcaption>Ilustração animada das costas: retas, inclinadas e de lado.</figcaption>
+    </figure>
+  </div>
+  <div class="wrap" style="padding-top:0">
+    <h2 class="no-print">Escolha por onde ir</h2>
+    <div class="tiles" id="tiles"></div>
+</div>
+</section>
+
+<!-- 2 O QUE É -->
+<section class="page" id="page-o-que-e" hidden>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">O que é o OWAS</p>
+      <h1 tabindex="-1">Um jeito organizado de olhar a postura no trabalho</h1>
+      <p class="lead">OWAS é a sigla de <em>Ovako Working Posture Analysing System</em>.</p>
+    </header>
+    <div class="grid" id="s-origem" data-sec="Origem e uso">
+      <article class="card"><span class="bigicon" aria-hidden="true">1</span><h2>De onde veio</h2><p>Foi criado na indústria do aço da Finlândia, na empresa Ovako, por Karhu, Kansi e Kuorinka, e publicado em 1977. [[1]]</p></article>
+      <article class="card"><span class="bigicon" aria-hidden="true">2</span><h2>Para que serve</h2><p>Para observar as posturas de quem trabalha e mostrar quais merecem atenção primeiro. [[1]]</p></article>
+      <article class="card"><span class="bigicon" aria-hidden="true">3</span><h2>Como funciona</h2><p>Alguém observa a tarefa real e anota a postura de tempos em tempos. Por isso é um método de observação. [[4]]</p></article>
+    </div>
+    <div class="callout" style="margin-top:20px"><strong>Por que isso importa?</strong> Posturas ruins, mantidas ou repetidas, cansam músculos e articulações e podem contribuir para problemas ligados ao trabalho. [[11]] O OWAS ajuda a enxergar onde mudar.</div>
+    <h2 style="margin-top:26px" id="s-tempo" data-sec="Linha do tempo">Linha do tempo</h2>
+    <ol class="timeline">
+      <li><div class="y">1973</div><h3>Começa o desenvolvimento</h3><p class="muted" style="margin:0">Na empresa Ovako, na Finlândia. [[2]]</p></li>
+      <li><div class="y">1977</div><h3>O método é publicado</h3><p class="muted" style="margin:0">Primeiro artigo científico sobre o OWAS. [[1]]</p></li>
+      <li><div class="y">1991</div><h3>Versão em computador</h3><p class="muted" style="margin:0">O método passa a ser usado também em programa de computador, por exemplo na construção civil. [[3]]</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- 3 COMO FUNCIONA -->
+<section class="page" id="page-como-funciona" hidden>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">Como funciona</p>
+      <h1 tabindex="-1">Quatro coisas para observar</h1>
+      <p class="lead">Em cada postura, o avaliador olha para estas quatro informações.</p>
+    </header>
+    <div class="grid" id="partes" data-sec="As quatro informações"></div>
+    <h2 style="margin-top:30px" id="s-passos" data-sec="Passo a passo">Passo a passo</h2>
+    <ol class="passos" id="passos"></ol>
+  </div>
+</section>
+
+<!-- 4 POSTURAS -->
+<section class="page" id="page-posturas" hidden>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">Veja as posturas</p>
+      <h1 tabindex="-1">Como cada postura aparece na prática</h1>
+      <p class="lead">Figuras feitas para esta apresentação. São desenhos, não fotos de pessoas.</p>
+    </header>
+    <h2 id="s-info" data-sec="As quatro informações" style="margin-top:0">Costas, braços e pernas em figuras</h2>
+    <h3>Costas</h3>
+    <div class="figgrid" id="figCostas"></div>
+    <h3>Braços</h3>
+    <div class="figgrid" id="figBracos"></div>
+    <h3>Pernas</h3>
+    <div class="figgrid" id="figPernas"></div>
+    <p class="muted" style="margin-top:12px">Os traços tracejados em amarelo indicam giro do tronco; a caixa amarela indica peso carregado.</p>
+    <h2 style="margin-top:34px" id="s-casos" data-sec="Casos do dia a dia">Casos do dia a dia e o nível de cada um</h2>
+    <p class="muted">Casos hipotéticos para ensino. O nível foi lido na tabela do método, juntando costas, braços, pernas e peso. [[4]]</p>
+    <div class="figgrid cases" id="casos"></div>
+    <div class="callout warn" style="margin-top:20px"><strong>Lembre:</strong> o nível descreve a postura naquele momento da tarefa. Não é diagnóstico e não mostra sozinho o tempo nem a repetição. [[4]][[11]]</div>
+  </div>
+</section>
+
+<!-- 5 NÍVEIS -->
+<section class="page" id="page-niveis" hidden>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">Níveis de atenção</p>
+      <h1 tabindex="-1">Quanto antes corrigir? Quatro níveis</h1>
+      <p class="lead">Juntando as quatro informações, o método indica um nível de 1 a 4.</p>
+    </header>
+    <div class="grid" id="niveis" data-sec="Os quatro níveis"></div>
+    <div class="callout warn" style="margin-top:20px"><strong>Importante:</strong> o nível vem de uma tabela do método que cruza costas, braços, pernas e peso. Não é uma soma e não é diagnóstico. [[4]]</div>
+    <h2 style="margin-top:26px" id="s-exemplos" data-sec="Exemplos do dia a dia">Exemplos do dia a dia</h2>
+    <p class="muted">Exemplos hipotéticos para ensino; o nível foi lido na tabela do método.</p>
+    <div class="grid" id="exemplos"></div>
+  </div>
+</section>
+
+<!-- 6 APLICAÇÃO -->
+<section class="page" id="page-aplicacao" hidden>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">Na prática, no trabalho</p>
+      <h1 tabindex="-1">Como o OWAS é usado no trabalho</h1>
+      <p class="lead">Onde o método aparece, como é uma avaliação do começo ao fim e o que entregar no final.</p>
+    </header>
+    <h2 id="s-onde" data-sec="Onde é usado" style="margin-top:0">Onde o método é usado</h2>
+    <div class="grid" id="onde"></div>
+    <h2 style="margin-top:34px" id="s-passos2" data-sec="Passo a passo">Uma avaliação, do começo ao fim</h2>
+    <ol class="passos" id="aplicPassos"></ol>
+    <h2 style="margin-top:34px" id="s-ficha" data-sec="Exemplo de ficha">Exemplo de ficha de observação</h2>
+    <div class="callout warn"><strong>Exemplo fictício.</strong> Os registros abaixo foram inventados só para explicar como a ficha funciona. O nível de cada linha foi lido na tabela do método. [[4]]</div>
+    <div class="tablewrap"><table class="ficha" id="ficha"></table></div>
+    <div id="fichaResumo" style="margin-top:16px"></div>
+    <h2 style="margin-top:34px" id="s-relatorio" data-sec="O que entregar">O que entregar no relatório</h2>
+    <p class="muted">Sugestão de roteiro, montada a partir das etapas do método.</p>
+    <ul class="check" id="relatorio"></ul>
+    <h2 style="margin-top:34px" id="s-ciclo" data-sec="Avaliar, melhorar, reavaliar">O ciclo não termina na avaliação</h2>
+    <div class="grid" id="ciclo"></div>
+    <div class="cta" style="margin-top:22px">
+      <a class="btn big" href="#/fisioterapia">Ver situações de trabalho</a>
+      <a class="btn big primary" href="#/resultados">Ver o que os estudos mostram</a>
+    </div>
+  </div>
+</section>
+
+<!-- 7 RESULTADOS -->
+<section class="page" id="page-resultados" hidden>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">Dados e resultados</p>
+      <h1 tabindex="-1">O que os estudos mostram</h1>
+      <p class="lead">Números de artigos publicados, com a fonte de cada um.</p>
+    </header>
+    <div class="callout" id="s-aviso" data-sec="Antes dos números"><strong>Antes dos números:</strong> o OWAS é um método para <em>medir</em> posturas, e não um tratamento. Não existe um único “percentual de eficácia do OWAS”. O ganho aparece quando se compara a mesma tarefa <strong>antes e depois</strong> de mudanças no posto de trabalho, e os casos abaixo são estudos de campo isolados.</div>
+    <h2 id="s-fundicao" data-sec="Caso 1: fundição" style="margin-top:28px">Caso 1: fundição no Brasil [[13]]</h2>
+    <p>Tarefa: esmerilhar peças com lixadeira manual, em dois postos do setor de acabamento. Foram analisadas 16 posturas.</p>
+    <ul class="stats big" id="statFundicao"></ul>
+    <div class="grid two" style="margin-top:16px">
+      <article class="card"><h3>Antes das melhorias</h3><div class="bars wide" id="barFundAntes"></div></article>
+      <article class="card"><h3>Com as melhorias propostas</h3><div class="bars wide" id="barFundDepois"></div></article>
+    </div>
+    <p style="margin-top:14px"><strong>O que mudou:</strong> bancada pneumática regulável, dispositivo para segurar e posicionar a peça, talha pneumática para mover as peças e treinamento dos operadores. [[13]]</p>
+    <p class="muted">As contagens por nível foram feitas a partir do quadro do artigo; o texto do artigo informa a eliminação de 100% das posturas críticas (níveis 3 e 4). Confira no original como a reavaliação foi feita.</p>
+    <h2 id="s-estufa" data-sec="Caso 2: estufas" style="margin-top:34px">Caso 2: trabalho em estufas agrícolas na Espanha [[14]]</h2>
+    <p>Trabalhadores de estufas de abobrinha foram filmados e as posturas, classificadas pelo OWAS. Os quatro níveis apareceram.</p>
+    <div class="card" style="margin-top:12px"><h3>Posturas por nível de atenção</h3><div class="bars wide" id="barEstufa"></div>
+      <p id="estufaTexto" style="margin:12px 0 0"></p></div>
+    <h2 id="s-metodos2" data-sec="Os métodos concordam?" style="margin-top:34px">Os métodos concordam entre si?</h2>
+    <ul class="stats big" id="statConcord"></ul>
+    <p style="margin-top:12px">Em um estudo com 301 posturas, OWAS e RULA deram a mesma categoria em 29,2% dos casos, e RULA e REBA em 48,2%. [[5]] Uma revisão de 30 métodos observacionais concluiu que nenhum se mostrou melhor que os demais em geral. [[7]]</p>
+    <h2 id="s-ler" data-sec="Como ler os números" style="margin-top:34px">Como ler esses números</h2>
+    <ul class="check" id="comoLer"></ul>
+    <h2 id="s-medir" data-sec="Medir no seu caso" style="margin-top:34px">Como medir o ganho no seu caso</h2>
+    <p class="muted">Sugestão prática, não é um resultado de estudo.</p>
+    <ul class="check" id="medir"></ul>
+  </div>
+</section>
+
+<!-- 8 FISIOTERAPIA -->
+<section class="page" id="page-fisioterapia" hidden>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">Fisioterapia na prática</p>
+      <h1 tabindex="-1">Como usar em situações de trabalho</h1>
+      <p class="lead">Escolha uma situação para ver o que observar e o que melhorar.</p>
+    </header>
+    <div class="callout warn"><strong>Regra de ouro:</strong> se faltar alguma das quatro informações, não dá para dar o nível. O certo é observar mais.</div>
+    <div class="subtabs" id="fisioTabs" role="tablist" aria-label="Situações de trabalho"></div>
+    <div id="fisioPanels"></div>
+  </div>
+</section>
+
+<!-- 6 VANTAGENS -->
+<section class="page" id="page-vantagens" hidden>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">Vantagens, limites e tecnologia</p>
+      <h1 tabindex="-1">O que o OWAS faz bem e o que ele não faz</h1>
+    </header>
+    <div class="grid two" id="s-pros" data-sec="Vantagens e limites">
+      <article class="card"><h2>Vantagens</h2><ul id="pros"></ul></article>
+      <article class="card"><h2>Limites</h2><ul id="contras"></ul></article>
+    </div>
+    <h2 style="margin-top:28px" id="s-metodos" data-sec="Outros métodos">E os outros métodos?</h2>
+    <div class="grid">
+      <article class="card"><h3>OWAS</h3><p class="muted" style="margin:0">Olha a tarefa inteira, com várias posturas ao longo do tempo. [[4]]</p></article>
+      <article class="card"><h3>RULA</h3><p class="muted" style="margin:0">Dá mais atenção a braços e pescoço. [[8]]</p></article>
+      <article class="card"><h3>REBA</h3><p class="muted" style="margin:0">Olha o corpo todo em posturas variadas. [[9]]</p></article>
+    </div>
+    <p style="margin-top:12px">Cada um tem foco diferente e <strong>os resultados nem sempre coincidem</strong>: em um estudo com 301 posturas, OWAS e RULA concordaram em apenas 29,2% dos casos. [[5]]</p>
+    <h2 style="margin-top:28px" id="s-tecno" data-sec="Tecnologia">Tecnologia ajuda?</h2>
+    <div class="grid" id="tecno"></div>
+    <div class="callout warn" style="margin-top:18px"><strong>Nesta apresentação:</strong> não usamos inteligência artificial para analisar imagens ou vídeos. A tecnologia aqui é só o material interativo.</div>
+  </div>
+</section>
+
+<!-- 7 QUIZ -->
+<section class="page interactive-only" id="page-quiz" hidden>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">Quiz</p>
+      <h1 tabindex="-1">Teste o que você aprendeu</h1>
+      <p class="lead">Cinco perguntas rápidas.</p>
+    </header>
+    <div class="print-only"><p>Quiz interativo com 5 perguntas, disponível na versão digital.</p></div>
+    <div class="card" id="quizBox"></div>
+  </div>
+</section>
+
+<!-- 8 FLASHCARDS -->
+<section class="page interactive-only" id="page-flashcards" hidden>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">Flashcards</p>
+      <h1 tabindex="-1">Pergunte à turma, depois vire o cartão</h1>
+      <p class="lead">Leia a pergunta, deixe a turma responder e clique no cartão para ver a resposta.</p>
+    </header>
+    <div class="fc-wrap">
+      <div class="fc-stats"><strong id="fcCount" aria-live="polite">Cartão 1 de 10</strong></div>
+      <div class="bar-prog" aria-hidden="true"><i id="fcProg"></i></div>
+      <div id="fcStage"></div>
+      <div class="fc-ctrl">
+        <button class="btn big" type="button" id="fcPrev">← Anterior</button>
+        <button class="btn big primary" type="button" id="fcFlip">Ver resposta</button>
+        <button class="btn big" type="button" id="fcNext">Próximo →</button>
+      </div>
+      <div class="fc-ctrl">
+        <button class="btn" type="button" id="fcShuffle">Embaralhar</button>
+        <button class="btn ghost" type="button" id="fcReset">Recomeçar</button>
+      </div>
+      <details class="card no-print">
+        <summary>Quer criar uma pergunta da turma?</summary>
+        <p class="muted">A pergunta entra no fim do baralho (some ao recarregar a página).</p>
+        <form id="fcForm">
+          <label class="f" for="fcQ">Pergunta</label><input type="text" id="fcQ" autocomplete="off" maxlength="200">
+          <label class="f" for="fcA" style="margin-top:10px">Resposta</label><input type="text" id="fcA" autocomplete="off" maxlength="300">
+          <button class="btn primary" type="submit" style="margin-top:12px">Adicionar cartão</button>
+        </form>
+      </details>
+    </div>
+    <div class="print-only"><h2>Cartões de estudo</h2><ol class="fc-print" id="fcPrint"></ol></div>
+  </div>
+</section>
+
+<!-- 9 REFERÊNCIAS -->
+<section class="page" id="page-referencias" hidden>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker">Referências</p>
+      <h1 tabindex="-1">Fontes consultadas</h1>
+      <p class="lead">Os números entre colchetes ao longo da apresentação levam a esta lista.</p>
+    </header>
+    <div class="callout"><strong>Sobre a verificação:</strong> autores, títulos, anos e DOIs foram conferidos em páginas de periódicos, repositórios e instituições. Confira o link antes de citar em trabalhos formais. A tabela do método usada nos exemplos é a de [[4]].</div>
+    <div id="refBackBox" class="no-print" hidden style="margin-bottom:14px"><button class="btn big" type="button" id="refBack">← Voltar ao que eu estava lendo</button></div>
+    <div id="refList"></div>
+    <div class="no-print" style="margin-top:14px"><button class="btn primary" type="button" id="btnPrint2">Imprimir ou salvar como PDF</button></div>
+    <p class="print-only print-credit">OWAS LAB · Desenvolvido por Vitor Guilherme de Almeida Borda de Souza®</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-foot no-print">
+  <b>OWAS LAB</b> · Tecnologia, Ergonomia e Fisioterapia<br>
+  Desenvolvido por <strong>Vitor Guilherme de Almeida Borda de Souza</strong>®<br>
+  Atalhos: ← → trocam de página (nos flashcards, trocam de cartão) · P apresentar · F tela cheia · M menu · Esc sair
+</footer>
+<button class="to-top no-print" id="toTop" type="button" aria-label="Voltar ao topo da página" hidden>↑ Topo</button>
+
+<div class="pres-bar no-print" role="toolbar" aria-label="Controles do modo apresentação">
+  <button class="btn" id="presPrev" type="button">← Voltar</button>
+  <button class="btn" id="presFull" type="button">Tela cheia</button>
+  <button class="btn" id="presExit" type="button">Sair</button>
+  <button class="btn primary" id="presNext" type="button">Avançar →</button>
+</div>
+
+<script>
+/* Referências (conferidas em páginas de periódicos, repositórios e instituições). */
+const REFS = [
+  { id: 1, grupo: 'Trabalho original do método',
+    cit: 'KARHU, O.; KANSI, P.; KUORINKA, I. Correcting working postures in industry: a practical method for analysis. <i>Applied Ergonomics</i>, v. 8, n. 4, p. 199–201, 1977.',
+    doi: '10.1016/0003-6870(77)90164-8', url: 'https://doi.org/10.1016/0003-6870(77)90164-8',
+    uso: 'Origem, finalidade e estrutura em duas partes do método.' },
+  { id: 2, grupo: 'Trabalho original do método',
+    cit: 'KARHU, O.; HÄRKÖNEN, R.; SORVALI, P.; VEPSÄLÄINEN, P. Observing working postures in industry: examples of OWAS application. <i>Applied Ergonomics</i>, v. 12, n. 1, p. 13–17, 1981.',
+    doi: null, url: 'https://search.crossref.org/search/works?q=Observing+working+postures+in+industry+Examples+of+OWAS+application&from_ui=yes',
+    urlLabel: 'Localizar no Crossref (DOI não conferido)',
+    uso: 'Início do desenvolvimento em 1973 e exemplos de aplicação industrial.' },
+  { id: 3, grupo: 'Aplicação e desenvolvimento posterior',
+    cit: 'KIVI, P.; MATTILA, M. Analysis and improvement of work postures in the building industry: application of the computerised OWAS method. <i>Applied Ergonomics</i>, v. 22, n. 1, p. 43–48, 1991.',
+    doi: '10.1016/0003-6870(91)90009-7', url: 'https://doi.org/10.1016/0003-6870(91)90009-7',
+    uso: 'Versão computadorizada do OWAS aplicada à construção civil.' },
+  { id: 4, grupo: 'Fonte técnica institucional (universidade)',
+    cit: 'DIEGO-MAS, J. A. Postural assessment using the OWAS method. Ergonautas, Universitat Politècnica de València, 2025.',
+    doi: null, url: 'https://www.ergoniza.upv.es/en/?method=owas',
+    url2: 'https://www.ergonautas.upv.es/metodos/owas/owas-ayuda.php', url2Label: 'Versão em espanhol',
+    uso: 'Tabelas de codificação, matriz de categorias, análise por frequência relativa e orientações de amostragem adotadas neste projeto.' },
+  { id: 5, grupo: 'Revisões e comparações entre métodos',
+    cit: 'KEE, D.; KARWOWSKI, W. A comparison of three observational techniques for assessing postural loads in industry. <i>International Journal of Occupational Safety and Ergonomics</i>, v. 13, n. 1, p. 3–14, 2007.',
+    doi: null, url: 'https://www.ciop.pl/15341.html', urlLabel: 'Página do periódico (CIOP)',
+    uso: 'Comparação de OWAS, RULA e REBA em 301 posturas; concordância entre métodos.' },
+  { id: 6, grupo: 'Revisões e comparações entre métodos',
+    cit: 'KEE, D. Systematic comparison of OWAS, RULA, and REBA based on a literature review. <i>International Journal of Environmental Research and Public Health</i>, v. 19, n. 1, art. 595, 2022.',
+    doi: '10.3390/ijerph19010595', url: 'https://doi.org/10.3390/ijerph19010595',
+    uso: 'Revisão científica sobre OWAS, RULA e REBA; diferenças de categorias e de amostragem.' },
+  { id: 7, grupo: 'Revisões e comparações entre métodos',
+    cit: 'TAKALA, E.-P.; PEHKONEN, I.; FORSMAN, M.; HANSSON, G.-Å.; MATHIASSEN, S. E.; NEUMANN, W. P.; SJØGAARD, G.; VEIERSTED, K. B.; WESTGAARD, R. H.; WINKEL, J. Systematic evaluation of observational methods assessing biomechanical exposures at work. <i>Scandinavian Journal of Work, Environment &amp; Health</i>, v. 36, n. 1, p. 3–24, 2010.',
+    doi: '10.5271/sjweh.2876', url: 'https://doi.org/10.5271/sjweh.2876',
+    uso: 'Revisão sistemática de 30 métodos observacionais; papel do treinamento e dificuldade de observar rotação do tronco.' },
+  { id: 8, grupo: 'Outros métodos: RULA e REBA',
+    cit: 'McATAMNEY, L.; CORLETT, E. N. RULA: a survey method for the investigation of work-related upper limb disorders. <i>Applied Ergonomics</i>, v. 24, n. 2, p. 91–99, 1993.',
+    doi: '10.1016/0003-6870(93)90080-S', url: 'https://doi.org/10.1016/0003-6870(93)90080-S',
+    uso: 'Método RULA, usado na comparação.' },
+  { id: 9, grupo: 'Outros métodos: RULA e REBA',
+    cit: 'HIGNETT, S.; McATAMNEY, L. Rapid entire body assessment (REBA). <i>Applied Ergonomics</i>, v. 31, n. 2, p. 201–205, 2000.',
+    doi: '10.1016/S0003-6870(99)00039-3', url: 'https://doi.org/10.1016/S0003-6870(99)00039-3',
+    uso: 'Método REBA, usado na comparação.' },
+  { id: 10, grupo: 'Tecnologia aplicada a métodos observacionais',
+    cit: 'DIEGO-MAS, J. A.; ALCAIDE-MARZAL, J. Using Kinect™ sensor in observational methods for assessing postures at work. <i>Applied Ergonomics</i>, v. 45, n. 4, p. 976–985, 2014.',
+    doi: '10.1016/j.apergo.2013.12.001', url: 'https://doi.org/10.1016/j.apergo.2013.12.001',
+    uso: 'Exemplo de pesquisa sobre sensores de apoio a métodos observacionais.' },
+  { id: 11, grupo: 'Fontes técnicas institucionais',
+    cit: 'NOGAREDA CUIXART, S.; DALMAU PONS, I. NTP 452: Evaluación de las condiciones de trabajo: carga postural. Instituto Nacional de Seguridad y Salud en el Trabajo (INSST), Espanha. (Série NTP 436–470, 1998, conforme a página do INSST.)',
+    doi: null, url: 'https://www.insst.es/documentacion/colecciones-tecnicas/ntp-notas-tecnicas-de-prevencion/13-serie-ntp-numeros-436-a-470-ano-1998/ntp-452-evaluacion-de-las-condiciones-de-trabajo-carga-postural', urlLabel: 'Página da NTP 452 no INSST',
+    uso: 'Carga postural estática, fadiga e comparação de métodos de avaliação postural.' },
+  { id: 12, grupo: 'Fontes técnicas institucionais',
+    cit: 'BRASIL. Ministério do Trabalho e Emprego. NR-17 — Ergonomia (nova redação dada pela Portaria MTP nº 423/2021). Confira sempre a versão vigente no portal do Ministério.',
+    doi: null, url: 'https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/inspecao-do-trabalho/seguranca-e-saude-no-trabalho/sst-portarias/2021/portaria-mtp-no-423-nova-nr-17.pdf/view', urlLabel: 'Portaria MTP nº 423/2021 no gov.br',
+    uso: 'Contexto normativo brasileiro da avaliação ergonômica.' },
+  { id: 13, grupo: 'Estudos de caso com OWAS',
+    cit: 'PEREIRA, N. F. S.; PINHEIRO, G. M.; VIRIATO, D. A.; SILVA, E. C. F. Melhoria ergonômica em postos de trabalho do setor de acabamento de uma fundição através do método OWAS de análise de posturas. <i>Revista Eletrônica Produção &amp; Engenharia</i>, v. 4, n. 2, p. 403–411, 2013.',
+    doi: null, url: 'https://periodicos.ufjf.br/index.php/producaoeengenharia/article/download/28808/19688/112678', urlLabel: 'Artigo no portal de periódicos da UFJF',
+    uso: 'Caso brasileiro de fundição: posturas críticas antes e depois das melhorias propostas; desconforto relatado pelos operadores.' },
+  { id: 14, grupo: 'Estudos de caso com OWAS',
+    cit: 'GÓMEZ-GALÁN, M.; GONZÁLEZ-PARRA, J.-M.; PÉREZ-ALONSO, J.; GOLASI, I.; CALLEJÓN-FERRE, Á.-J. Forced postures in courgette greenhouse workers. <i>Agronomy</i>, v. 9, n. 5, art. 253, 2019.',
+    doi: '10.3390/agronomy9050253', url: 'https://doi.org/10.3390/agronomy9050253',
+    uso: 'Distribuição das posturas por nível de atenção em trabalhadores de estufas agrícolas.' }
+];
+
+/* Tabela do método (Ergonautas/UPV), usada só para conferir os exemplos da página Níveis. */
+const MATRIX = {
+  '1-1': '111111111222222111111',
+  '1-2': '111111111222222111111',
+  '1-3': '111111111223223111112',
+  '2-1': '223223223333333222233',
+  '2-2': '223223233344344334234',
+  '2-3': '334223333344444444234',
+  '3-1': '111111112333444111111',
+  '3-2': '223111112444444333111',
+  '3-3': '223111233444444444111',
+  '4-1': '233223223444444444234',
+  '4-2': '334234334444444444234',
+  '4-3': '444234334444444444234'
+};
+function actionCategory(b, a, l, w) {
+  const row = MATRIX[b + '-' + a];
+  if (!row || l < 1 || l > 7 || w < 1 || w > 3) return null;
+  return Number(row[(l - 1) * 3 + (w - 1)]);
+}
+
+/* OWAS LAB (versão simples) — conteúdo em linguagem direta. */
+
+const NIVEIS = [
+  { n: 1, nome: 'Nível 1', cor: 'Verde', titulo: 'Tudo bem', txt: 'Postura normal e natural, sem efeito prejudicial para músculos e articulações.', acao: 'Não precisa mudar nada.' },
+  { n: 2, nome: 'Nível 2', cor: 'Amarelo', titulo: 'Atenção em breve', txt: 'Postura que pode causar algum dano ao sistema musculoesquelético.', acao: 'Corrigir em um futuro próximo.' },
+  { n: 3, nome: 'Nível 3', cor: 'Laranja', titulo: 'Corrigir logo', txt: 'Postura com efeito prejudicial ao sistema musculoesquelético.', acao: 'Corrigir o mais cedo possível.' },
+  { n: 4, nome: 'Nível 4', cor: 'Vermelho', titulo: 'Corrigir já', txt: 'A carga dessa postura tem efeito extremamente prejudicial.', acao: 'Corrigir imediatamente.' }
+];
+
+/* Exemplos hipotéticos de ensino. O nível é lido na tabela do método (matrix.js). */
+const EXEMPLOS = [
+  { t: 'Digitando sentado, com o tronco inclinado para a frente', cod: [2, 1, 1, 1] },
+  { t: 'Em pé, de costas retas, braços abaixo dos ombros e peso leve', cod: [1, 1, 2, 1] },
+  { t: 'Agachado, com o tronco inclinado, segurando uma peça leve', cod: [2, 1, 4, 1] },
+  { t: 'Ajoelhado, com o tronco inclinado e girado', cod: [4, 1, 6, 1] }
+];
+
+const PARTES = [
+  { id: 'costas', titulo: 'Costas', txt: 'Estão retas, inclinadas para a frente, giradas ou inclinadas de lado?', ops: ['Retas', 'Inclinadas', 'Giradas ou de lado', 'Inclinadas e giradas'] },
+  { id: 'bracos', titulo: 'Braços', txt: 'Ficam abaixo ou acima da altura dos ombros?', ops: ['Os dois abaixo dos ombros', 'Um no nível dos ombros ou acima', 'Os dois no nível dos ombros ou acima'] },
+  { id: 'pernas', titulo: 'Pernas', txt: 'A pessoa está sentada, em pé, agachada, ajoelhada ou andando?', ops: ['Sentada', 'Em pé', 'Agachada', 'Ajoelhada', 'Andando'] },
+  { id: 'carga', titulo: 'Peso carregado', txt: 'Quanto peso ou esforço existe naquele momento?', ops: ['Até 10 kg', 'De 10 a 20 kg', 'Mais de 20 kg'] }
+];
+
+const PASSOS = [
+  ['Observar o trabalho', 'Acompanhe a tarefa real, no local ou por fotos e vídeos, e converse com o trabalhador.'],
+  ['Anotar as posturas', 'Registre a postura em intervalos regulares (a fonte cita 30 a 60 segundos) durante 20 a 40 minutos, de acordo com a tarefa. [[4]]'],
+  ['Descobrir o nível de atenção', 'Com costas, braços, pernas e peso, consulte a tabela do método: ela indica o nível de 1 a 4.'],
+  ['Propor melhorias', 'Comece pelas posturas com nível mais alto e que mais se repetem: ajustar a altura, aproximar objetos, usar apoio mecânico.'],
+  ['Conferir de novo', 'Depois das mudanças, observe outra vez para ver se as posturas melhoraram. [[4]]']
+];
+
+const FISIO = [
+  { id: 'sentado', titulo: 'Trabalho sentado', obs: ['O tronco fica inclinado para a frente?', 'Os braços ficam muito altos ao usar teclado ou ferramenta?', 'Quanto tempo sem levantar?'],
+    melhoria: ['Ajustar a altura da cadeira e da mesa', 'Aproximar o que é mais usado', 'Combinar pausas e troca de posição'],
+    papel: 'Observar o posto, orientar os ajustes e acompanhar as queixas.',
+    limite: 'Só observar “sentado” não mostra pescoço, punhos e tempo de permanência.' },
+  { id: 'carga', titulo: 'Levantar e carregar peso', obs: ['O tronco inclina ou gira ao pegar e ao deixar a carga?', 'Quanto pesa a carga e a que altura ela está?', 'Quantas vezes por hora?'],
+    melhoria: ['Evitar pegar do chão ou muito alto', 'Usar carrinho ou auxílio mecânico', 'Dividir cargas pesadas'],
+    papel: 'Observar cada fase (pegar, levar, deixar) e propor mudanças no posto.',
+    limite: 'Uma foto isolada não representa todo o ciclo de trabalho.' },
+  { id: 'empe', titulo: 'Trabalho em pé', obs: ['O peso fica só em uma perna?', 'Há braços elevados?', 'Quanto tempo em pé sem pausa?'],
+    melhoria: ['Regular a altura da bancada', 'Alternar posições e criar pausas', 'Oferecer apoio para os pés'],
+    papel: 'Avaliar o posto e orientar a alternância de posições.',
+    limite: 'Uma postura “boa” mantida por muito tempo ainda cansa: o tempo precisa ser anotado.' },
+  { id: 'agacha', titulo: 'Agachado ou ajoelhado', obs: ['Os joelhos ficam dobrados ou apoiados no chão?', 'O tronco está inclinado ao mesmo tempo?', 'Por quanto tempo?'],
+    melhoria: ['Elevar o ponto de trabalho', 'Usar banco baixo, apoio ou joelheira', 'Variar as tarefas'],
+    papel: 'Identificar as posturas mais críticas e sugerir equipamentos.',
+    limite: 'Sem ver costas, braços, pernas e peso, não é possível dar o nível. Falta informação? Observe mais.' }
+];
+
+const PROS = [
+  'Método organizado, com passos claros. [[1]]',
+  'Olha a tarefa inteira, e não só uma postura. [[4]]',
+  'Ajuda a decidir o que corrigir primeiro.',
+  'Pode ser repetido depois das mudanças, para comparar.'
+];
+const CONTRAS = [
+  'Depende de quem observa; precisa de treino. [[7]]',
+  'Não avalia pescoço, antebraços e punhos. [[8]]',
+  'Não diagnostica lesões nem doenças.',
+  'O nível não mostra sozinho o tempo, a repetição e a organização do trabalho. [[11]]'
+];
+
+const TECNO = [
+  { t: 'Formulários digitais', d: 'Registrar as posturas no celular ou computador, com menos erros de anotação.', b: 'Possível hoje' },
+  { t: 'Painéis de acompanhamento', d: 'Mostrar quantas posturas ficam em cada nível e comparar antes e depois das mudanças.', b: 'Possível hoje' },
+  { t: 'Visão computacional (IA)', d: 'Reconhecer posturas em vídeo ou foto. É assunto de pesquisa e precisa ser validado antes de uso profissional. [[10]]', b: 'Futuro' }
+];
+
+/* ---------- Quiz: 5 perguntas ---------- */
+const QUIZ = [
+  { q: 'Para que serve o método OWAS?', opts: ['Para diagnosticar lesões nos trabalhadores', 'Para observar posturas de trabalho e decidir o que melhorar primeiro', 'Para medir a força muscular', 'Para escolher o horário das pausas'], a: 1,
+    ex: 'O OWAS observa e classifica posturas no trabalho para orientar mudanças. Ele não faz diagnóstico. [[1]]' },
+  { q: 'Quais informações o OWAS observa em cada postura?', opts: ['Pescoço, punhos e dedos', 'Costas, braços, pernas e peso carregado', 'Somente costas e pernas', 'Cabeça, ombros e quadril'], a: 1,
+    ex: 'O método registra costas, braços, pernas e a carga ou força manipulada. [[4]]' },
+  { q: 'Onde o OWAS foi criado?', opts: ['Em clínicas de reabilitação do Brasil', 'Em escritórios nos Estados Unidos', 'Na indústria do aço, na Finlândia', 'Em academias de ginástica'], a: 2,
+    ex: 'Foi desenvolvido na empresa siderúrgica Ovako, na Finlândia, e publicado em 1977. [[1]]' },
+  { q: 'O que significa o nível 4 do método?', opts: ['Postura normal, sem mudanças', 'Corrigir em um futuro distante', 'Corrigir o mais cedo possível', 'Corrigir imediatamente'], a: 3,
+    ex: 'No nível 4 a postura exige correção imediata. O nível vem da tabela do método, e não de uma soma. [[4]]' },
+  { q: 'O resultado do OWAS é um diagnóstico de lesão?', opts: ['Sim, o nível 4 confirma uma lesão', 'Sim, se feito por fisioterapeuta', 'Não: ele classifica posturas na tarefa e ajuda a priorizar melhorias', 'Sim, depois de 100 observações'], a: 2,
+    ex: 'O OWAS descreve posturas durante o trabalho. Dor e lesão precisam de avaliação clínica própria. [[1]][[4]]' }
+];
+
+/* ---------- Flashcards: 10 cartões ---------- */
+const CARDS = [
+  { q: 'O que é o OWAS?', a: 'Um método de observação de posturas de trabalho. Ele ajuda a descobrir quais posturas merecem atenção e em que ordem corrigir. [[1]]' },
+  { q: 'De onde veio o OWAS?', a: 'Da indústria do aço na Finlândia (empresa Ovako). O método foi publicado em 1977. [[1]]' },
+  { q: 'O que o OWAS observa?', a: 'Costas, braços, pernas e o peso que a pessoa carrega ou o esforço que faz. [[4]]' },
+  { q: 'Como é feita a avaliação?', a: 'Observando o trabalho real e anotando a postura em intervalos regulares, no local ou por foto e vídeo. [[4]]' },
+  { q: 'O que são os níveis de 1 a 4?', a: 'São níveis de atenção: 1 não precisa mudar; 2 corrigir em breve; 3 corrigir logo; 4 corrigir imediatamente. [[4]]' },
+  { q: 'Como se descobre o nível?', a: 'Consultando a tabela do método com as quatro informações da postura. Não é uma soma nem uma média.' },
+  { q: 'O OWAS diagnostica doenças?', a: 'Não. Ele classifica posturas durante a tarefa. Dor e lesão exigem avaliação clínica.' },
+  { q: 'Qual é o papel do fisioterapeuta?', a: 'Observar, interpretar os achados no contexto do trabalho, propor melhorias, orientar e conferir de novo depois das mudanças.' },
+  { q: 'Qual é uma limitação do OWAS?', a: 'Depende de quem observa e não mostra sozinho o tempo, a repetição e a organização do trabalho. [[7]][[11]]' },
+  { q: 'A inteligência artificial já substitui o avaliador?', a: 'Não. Reconhecer posturas por imagem é tema de pesquisa e precisa de validação. Este trabalho não usa IA para analisar imagens. [[10]]' }
+];
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { NIVEIS, EXEMPLOS, PARTES, PASSOS, FISIO, PROS, CONTRAS, TECNO, QUIZ, CARDS };
+}
+
+/* OWAS LAB (versão simples) — equipe, ilustrações de posturas e dados dos estudos. */
+
+/* ---------- Equipe (a ordem alfabética é aplicada no app.js) ---------- */
+const EQUIPE = [
+  'Betina Arielo Beltramin', 'Yasmin Larissa Mendes', 'Matheus Odria Andreose', 'Julia Duarte Galdino Fernandes',
+  'Isabele do Carmo Fadini', 'Maria Clara de Oliveira Posso', 'Raul Bernardi Raminelli', 'Vitor Guilherme',
+  'Kaiki Lima', 'Jorge Vinícius', 'João Pedro Belphman Orti Lopes', 'Larissa Del Pupo Giati'
+];
+const DEV = 'Vitor Guilherme de Almeida Borda de Souza';
+
+/* ---------- Ilustrações originais (figuras de traços, não são fotos) ----------
+   Todas as figuras são desenhadas por esta função. Parâmetros:
+   legs: sit | stand | squat | kneel | walk   lean: inclinação do tronco para a frente (graus)
+   view: 'side' (padrão) ou 'front'            side: inclinação para o lado (graus, só em 'front')
+   twist: tronco girado                         arms: down | hold | one | both            box: texto da carga */
+function figSVG(p) {
+  const G = 215, B = '#22d3ee', B2 = '#7fb6d8', AM = '#facc15';
+  const lean = (p.lean || 0) * Math.PI / 180, front = p.view === 'front';
+  const seg = (pts, c, w, o) => '<polyline points="' + pts.map(q => q.join(',')).join(' ') + '" fill="none" stroke="' + (c || B) + '" stroke-width="' + (w || 7) + '" stroke-linecap="round" stroke-linejoin="round"' + (o ? ' opacity="' + o + '"' : '') + '/>';
+  let H, legs = '', extra = '';
+  const ground = '<line x1="14" y1="' + (G + 4) + '" x2="186" y2="' + (G + 4) + '" stroke="rgba(148,180,230,.35)" stroke-width="2"/>';
+  if (front) {
+    H = [100, 123];
+    legs = seg([H, [88, 169], [82, G]]) + seg([H, [112, 169], [118, G]]);
+  } else if (p.legs === 'sit') {
+    H = [84, 150];
+    legs = seg([H, [130, 150], [132, G]]);
+    extra = '<g stroke="' + B2 + '" stroke-width="4" stroke-linecap="round" opacity=".7"><line x1="66" y1="158" x2="120" y2="158"/><line x1="66" y1="158" x2="66" y2="104"/><line x1="70" y1="158" x2="70" y2="' + G + '"/><line x1="116" y1="158" x2="116" y2="' + G + '"/></g>' +
+      '<g stroke="' + B2 + '" stroke-width="4" stroke-linecap="round" opacity=".7"><line x1="124" y1="142" x2="190" y2="142"/><line x1="186" y1="142" x2="186" y2="' + G + '"/></g>';
+  } else if (p.legs === 'squat') {
+    H = [82, 178]; legs = seg([H, [128, 150], [108, G]]);
+  } else if (p.legs === 'kneel') {
+    H = [98, 150];
+    legs = seg([H, [140, 172], [140, G]], B2, 6, 0.75) + seg([H, [118, G - 4], [62, G - 4]]);
+  } else if (p.legs === 'walk') {
+    H = [100, 123];
+    legs = seg([H, [80, 168], [58, G - 6]], B2, 6, 0.75) + seg([H, [124, 168], [142, G]]);
+  } else {
+    H = [100, 123]; legs = seg([H, [92, 169], [88, G]], B2, 6, 0.8) + seg([H, [108, 169], [112, G]]);
+  }
+  const Lt = 62;
+  let S, headC;
+  if (front) {
+    const a = (p.side || 0) * Math.PI / 180;
+    S = [H[0] + Lt * Math.sin(a), H[1] - Lt * Math.cos(a)];
+    headC = [S[0] + 24 * Math.sin(a), S[1] - 24 * Math.cos(a)];
+  } else {
+    S = [H[0] + Lt * Math.sin(lean), H[1] - Lt * Math.cos(lean)];
+    headC = [S[0] + 24 * Math.sin(lean), S[1] - 24 * Math.cos(lean)];
+  }
+  const r1 = v => Math.round(v * 10) / 10;
+  S = S.map(r1); headC = headC.map(r1);
+  let arms = '', box = '';
+  if (front) {
+    arms = seg([S, [S[0] - 12, S[1] + 30], [S[0] - 14, S[1] + 58]]) + seg([S, [S[0] + 12, S[1] + 30], [S[0] + 14, S[1] + 58]], B2, 6, 0.8);
+  } else if (p.arms === 'one') {
+    arms = seg([S, [S[0] + 28, S[1] - 2], [S[0] + 54, S[1] - 26]]) + seg([S, [S[0] + 6, S[1] + 30], [S[0] + 10, S[1] + 60]], B2, 6, 0.75);
+  } else if (p.arms === 'both') {
+    arms = seg([S, [S[0] + 24, S[1] - 16], [S[0] + 42, S[1] - 46]]) + seg([S, [S[0] + 30, S[1] - 8], [S[0] + 52, S[1] - 36]], B2, 6, 0.8);
+  } else if (p.arms === 'hold') {
+    const hand = [S[0] + 38, S[1] + 44];
+    arms = seg([S, [S[0] + 18, S[1] + 30], hand]);
+    if (p.box) box = '<rect x="' + (hand[0] - 6) + '" y="' + (hand[1] - 4) + '" width="58" height="28" rx="4" fill="rgba(250,204,21,.22)" stroke="' + AM + '" stroke-width="2.5"/><text x="' + (hand[0] + 23) + '" y="' + (hand[1] + 14) + '" text-anchor="middle" font-size="9.5" font-family="ui-monospace,monospace" fill="' + AM + '">' + p.box + '</text>';
+  } else {
+    arms = seg([S, [S[0] + 10, S[1] + 30], [S[0] + 18, S[1] + 58]]);
+  }
+  let twist = '';
+  if (p.twist) twist = '<ellipse cx="' + S[0] + '" cy="' + S[1] + '" rx="19" ry="6" fill="none" stroke="' + AM + '" stroke-width="2.5" stroke-dasharray="4 3"/><path d="M' + (S[0] + 16) + ' ' + (S[1] - 8) + ' l8 4 l-9 4" fill="none" stroke="' + AM + '" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>';
+  return '<svg viewBox="0 0 200 232" aria-hidden="true" focusable="false">' + ground + extra + legs +
+    seg([H, S]) + '<circle cx="' + headC[0] + '" cy="' + headC[1] + '" r="13" fill="rgba(34,211,238,.18)" stroke="' + B + '" stroke-width="5"/>' + arms + box + twist +
+    '<circle cx="' + H[0] + '" cy="' + H[1] + '" r="5" fill="' + B + '"/></svg>';
+}
+
+/* As quatro informações em figuras */
+const FIG_COSTAS = [
+  { t: 'Retas', d: 'Tronco na vertical.', p: { legs: 'stand', arms: 'down' } },
+  { t: 'Inclinadas para a frente', d: 'Tronco curvado à frente.', p: { legs: 'stand', lean: 35, arms: 'down' } },
+  { t: 'Inclinadas para o lado', d: 'Tronco tombado para um dos lados.', p: { view: 'front', side: 22 } },
+  { t: 'Inclinadas e giradas', d: 'Curvadas à frente e com giro do tronco.', p: { legs: 'stand', lean: 35, twist: true, arms: 'down' } }
+];
+const FIG_BRACOS = [
+  { t: 'Os dois abaixo dos ombros', d: 'Posição mais confortável.', p: { legs: 'stand', arms: 'down' } },
+  { t: 'Um no nível dos ombros ou acima', d: 'Um braço elevado.', p: { legs: 'stand', arms: 'one' } },
+  { t: 'Os dois no nível dos ombros ou acima', d: 'Trabalho com as duas mãos no alto.', p: { legs: 'stand', arms: 'both' } }
+];
+const FIG_PERNAS = [
+  { t: 'Sentada', d: 'Apoio na cadeira.', p: { legs: 'sit', arms: 'hold' } },
+  { t: 'Em pé', d: 'Peso sobre as duas pernas.', p: { legs: 'stand', arms: 'down' } },
+  { t: 'Agachada', d: 'Joelhos dobrados.', p: { legs: 'squat', arms: 'down' } },
+  { t: 'Ajoelhada', d: 'Joelho apoiado no chão.', p: { legs: 'kneel', arms: 'down' } },
+  { t: 'Andando', d: 'Caminhando durante a tarefa.', p: { legs: 'walk', arms: 'down' } }
+];
+
+/* Casos do dia a dia: o nível é lido na tabela do método (matrix.js) */
+const CASOS = [
+  { t: 'Sentado, costas retas', d: 'Usando o teclado, com o tronco apoiado.', cod: [1, 1, 1, 1], p: { legs: 'sit', arms: 'hold' } },
+  { t: 'Sentado, tronco inclinado', d: 'Digitando com o corpo curvado para a frente.', cod: [2, 1, 1, 1], p: { legs: 'sit', lean: 28, arms: 'hold' } },
+  { t: 'Em pé, costas retas', d: 'Trabalho leve na altura da cintura.', cod: [1, 1, 2, 1], p: { legs: 'stand', arms: 'down' } },
+  { t: 'Em pé, tronco inclinado para o lado', d: 'Alcançando algo fora do eixo do corpo.', cod: [3, 1, 2, 1], p: { view: 'front', side: 22 } },
+  { t: 'Em pé, braços acima dos ombros', d: 'Tarefa em altura, como pintar uma parede.', cod: [1, 3, 2, 1], p: { legs: 'stand', arms: 'both' } },
+  { t: 'Carregando peso com o tronco inclinado', d: 'Segurando uma carga de 10 a 20 kg.', cod: [2, 1, 2, 2], p: { legs: 'stand', lean: 35, arms: 'hold', box: '10–20 kg' } },
+  { t: 'Agachado, tronco inclinado', d: 'Pegando uma peça leve no chão.', cod: [2, 1, 4, 1], p: { legs: 'squat', lean: 35, arms: 'hold', box: 'até 10 kg' } },
+  { t: 'Ajoelhado, inclinado e girado', d: 'Trabalho no nível do chão com giro do tronco.', cod: [4, 1, 6, 1], p: { legs: 'kneel', lean: 35, twist: true, arms: 'hold' } },
+  { t: 'Andando com carga', d: 'Levando uma carga de 10 a 20 kg.', cod: [1, 1, 7, 2], p: { legs: 'walk', arms: 'hold', box: '10–20 kg' } },
+  { t: 'Inclinado e girado com carga pesada', d: 'Segurando mais de 20 kg, com giro do tronco.', cod: [4, 1, 2, 3], p: { legs: 'stand', lean: 30, twist: true, arms: 'hold', box: '+20 kg' } }
+];
+
+/* Ficha de exemplo (FICTÍCIA, só para explicar). Nível lido na tabela do método. */
+const FICHA = [
+  { m: '00:00', costas: 'Retas', bracos: 'Abaixo dos ombros', pernas: 'Em pé', peso: 'Até 10 kg', cod: [1, 1, 2, 1] },
+  { m: '00:30', costas: 'Inclinadas', bracos: 'Abaixo dos ombros', pernas: 'Em pé', peso: '10 a 20 kg', cod: [2, 1, 2, 2] },
+  { m: '01:00', costas: 'Inclinadas e giradas', bracos: 'Abaixo dos ombros', pernas: 'Em pé', peso: '10 a 20 kg', cod: [4, 1, 2, 2] },
+  { m: '01:30', costas: 'Inclinadas', bracos: 'Abaixo dos ombros', pernas: 'Agachada', peso: 'Até 10 kg', cod: [2, 1, 4, 1] },
+  { m: '02:00', costas: 'Retas', bracos: 'Um braço acima', pernas: 'Em pé', peso: 'Até 10 kg', cod: [1, 2, 2, 1] },
+  { m: '02:30', costas: 'Retas', bracos: 'Abaixo dos ombros', pernas: 'Andando', peso: 'Até 10 kg', cod: [1, 1, 7, 1] }
+];
+
+/* Dados dos estudos citados. Números tirados dos artigos [13] e [14]; veja a página Resultados. */
+const ESTUDO_FUNDICAO = {
+  antes: [1, 11, 3, 1],    // posturas por nível 1..4 (16 posturas), conforme quadro do artigo [13]
+  depois: [12, 4, 0, 0]
+};
+const ESTUDO_ESTUFA = [33.33, 37.14, 28.57, 0.95]; // % de posturas por nível 1..4, artigo [14]
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { EQUIPE, DEV, figSVG, FIG_COSTAS, FIG_BRACOS, FIG_PERNAS, CASOS, FICHA, ESTUDO_FUNDICAO, ESTUDO_ESTUFA };
+}
+
+</script>
+<script>
+/* OWAS LAB (versão simples) — interface. Depende de refs.js, matrix.js e data.js. */
+(function () {
+'use strict';
+const $ = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const cite = s => String(s).replace(/\[\[(\d+)\]\]/g, (m, n) => '<a class="cite" href="#/referencias/' + n + '" title="Ver referência ' + n + '">[' + n + ']</a>');
+const store = { get(k) { try { return window.localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { window.localStorage.setItem(k, v); } catch (e) { /* sem armazenamento */ } } };
+const reduceMotion = () => !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+function shuffle(a) { const r = a.slice(); for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = r[i]; r[i] = r[j]; r[j] = t; } return r; }
+let toastTimer = null;
+function toast(msg, ms) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, ms || 3000); }
+function tabKeys(list) {
+  list.addEventListener('keydown', e => {
+    const tabs = $$('[role="tab"]', list); const i = tabs.indexOf(document.activeElement); if (i < 0) return; let n = -1;
+    if (e.key === 'ArrowRight') n = (i + 1) % tabs.length; else if (e.key === 'ArrowLeft') n = (i - 1 + tabs.length) % tabs.length;
+    else if (e.key === 'Home') n = 0; else if (e.key === 'End') n = tabs.length - 1;
+    if (n >= 0) { e.preventDefault(); tabs[n].focus(); tabs[n].click(); }
+  });
+}
+
+/* ---------- páginas ---------- */
+const PAGES = [
+  { id: 'inicio', t: 'Início', s: 'Capa e acesso rápido' },
+  { id: 'o-que-e', t: 'O que é o OWAS', s: 'Origem e para que serve' },
+  { id: 'como-funciona', t: 'Como funciona', s: 'O que se observa e o passo a passo' },
+  { id: 'posturas', t: 'Veja as posturas', s: 'Figuras e casos do dia a dia' },
+  { id: 'niveis', t: 'Níveis de atenção', s: 'Do nível 1 ao 4, com exemplos' },
+  { id: 'aplicacao', t: 'No trabalho', s: 'Como o método é aplicado' },
+  { id: 'resultados', t: 'Dados e resultados', s: 'O que os estudos mostram' },
+  { id: 'fisioterapia', t: 'Fisioterapia', s: 'Situações de trabalho' },
+  { id: 'vantagens', t: 'Vantagens e limites', s: 'Outros métodos e tecnologia' },
+  { id: 'quiz', t: 'Quiz', s: '5 perguntas rápidas' },
+  { id: 'flashcards', t: 'Flashcards', s: '10 cartões para a turma' },
+  { id: 'referencias', t: 'Referências', s: 'Fontes consultadas' }
+];
+const pageHandlers = {};
+let currentIdx = 0, firstRoute = true;
+let vhash = null;
+const readHash = () => (vhash !== null ? vhash : (location.hash || ''));
+function parseHash() { const parts = readHash().replace(/^#\/?/, '').split('/'); const i = PAGES.findIndex(p => p.id === parts[0]); return { idx: i < 0 ? 0 : i, arg: parts[1] }; }
+/* Navegação própria: funciona mesmo quando o visualizador bloqueia mudar o endereço da página. */
+function navigate(h, replace) {
+  if (h.charAt(0) !== '#') h = '#' + h;
+  vhash = h;
+  try { if (replace) history.replaceState(null, '', h); else if (location.hash !== h) history.pushState(null, '', h); } catch (e) { /* visualizador bloqueia: segue só por dentro */ }
+  route();
+}
+const go = id => navigate('#/' + id);
+const goIdx = i => go(PAGES[(i + PAGES.length) % PAGES.length].id);
+
+let curHash = '', curY = 0, cameFrom = null, pendingScroll = null;
+const jump = y => window.scrollTo({ top: y, left: 0, behavior: 'instant' });
+const smooth = () => (reduceMotion() ? 'auto' : 'smooth');
+function scrollToSection(el) {
+  el.scrollIntoView({ block: 'start', behavior: smooth() });
+  el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  setTimeout(() => el.classList.remove('flash'), 1800);
+}
+function route() {
+  const prevHash = curHash, prevY = curY; curHash = readHash() || '#/inicio';
+  const { idx, arg } = parseHash(); currentIdx = idx;
+  const page = PAGES[idx], isRef = page.id === 'referencias';
+  $$('main > .page').forEach(s => { s.hidden = s.id !== 'page-' + page.id; });
+  $$('[data-nav]').forEach(a => { if (a.dataset.nav === page.id) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  $('#nowIdx').textContent = (idx + 1) + '/' + PAGES.length; $('#nowTitle').textContent = page.t;
+  $('#topProgress').style.width = ((idx + 1) / PAGES.length * 100) + '%';
+  document.title = 'OWAS LAB — ' + page.t;
+  $('#btnPrev').disabled = idx === 0; $('#btnNext').disabled = idx === PAGES.length - 1;
+  $('#presPrev').disabled = idx === 0; $('#presNext').disabled = idx === PAGES.length - 1;
+  closeMenu(true);
+  const navA = $('#navList a[aria-current="page"]'); if (navA && navA.scrollIntoView) { try { navA.scrollIntoView({ block: 'nearest', inline: 'center' }); } catch (e) { /* ignora */ } }
+  $$('.refs li').forEach(li => li.classList.remove('hl'));
+  if (isRef && arg && prevHash && !/^#\/referencias/.test(prevHash)) cameFrom = { hash: prevHash, y: prevY };
+  $('#refBackBox').hidden = !(isRef && arg && cameFrom);
+  if (isRef && arg) { const li = $('#ref-' + arg); if (li) { li.classList.add('hl'); li.scrollIntoView({ block: 'center', behavior: 'instant' }); firstRoute = false; return; } }
+  if (pendingScroll !== null) { const y = pendingScroll; pendingScroll = null; jump(y); firstRoute = false; return; }
+  const sec = arg && !isRef ? document.getElementById(arg) : null;
+  if (sec && sec.hasAttribute('data-sec') && $('#page-' + page.id).contains(sec)) { firstRoute = false; scrollToSection(sec); return; }
+  jump(0);
+  if (!firstRoute) { const h1 = $('h1', $('#page-' + page.id)); if (h1) h1.focus({ preventScroll: true }); }
+  firstRoute = false;
+}
+
+function buildNav() {
+  $('#navList').innerHTML = PAGES.map((p, i) => '<li><a href="#/' + p.id + '" data-nav="' + p.id + '"><i>' + (i + 1) + '</i>' + esc(p.t) + '</a></li>').join('');
+  $('#menuGrid').innerHTML = PAGES.map((p, i) => '<a href="#/' + p.id + '" data-nav="' + p.id + '"><i>' + (i + 1) + '</i><strong>' + esc(p.t) + '</strong><small>' + esc(p.s) + '</small></a>').join('');
+  $('#tiles').innerHTML = PAGES.slice(1).map((p, i) => '<a href="#/' + p.id + '"' + ((p.id === 'quiz' || p.id === 'flashcards') ? ' class="hot"' : '') + '><i>' + (i + 2) + '</i><strong>' + esc(p.t) + '</strong><small>' + esc(p.s) + '</small></a>').join('');
+  $$('main > .page').forEach(sec => {
+    const idx = PAGES.findIndex(p => 'page-' + p.id === sec.id); const wraps = $$('.wrap', sec); const last = wraps[wraps.length - 1];
+    const prev = PAGES[idx - 1], next = PAGES[idx + 1];
+    const secs = $$('[data-sec]', sec), head = $('.page-head', sec);
+    if (secs.length >= 2 && head) head.insertAdjacentHTML('afterend', '<nav class="onpage no-print" aria-label="Nesta página"><span>Nesta página:</span>' +
+      secs.map(e => '<a href="#/' + PAGES[idx].id + '/' + e.id + '" data-sec-link="' + e.id + '">' + esc(e.dataset.sec) + '</a>').join('') + '</nav>');
+    last.insertAdjacentHTML('beforeend', '<nav class="pager no-print" aria-label="Navegar entre páginas">' +
+      (prev ? '<a class="btn big" href="#/' + prev.id + '">← ' + esc(prev.t) + '</a>' : '<span></span>') +
+      (next ? '<a class="btn big primary" href="#/' + next.id + '">' + esc(next.t) + ' →</a>' : '<a class="btn big" href="#/inicio">Voltar ao início</a>') + '</nav>');
+  });
+}
+let menuReturn = null;
+function openMenu() { const m = $('#menuPanel'); m.hidden = false; $('#btnMenu').setAttribute('aria-expanded', 'true'); menuReturn = document.activeElement; $('#menuClose').focus(); }
+function closeMenu(silent) { const m = $('#menuPanel'); if (m.hidden) return; m.hidden = true; $('#btnMenu').setAttribute('aria-expanded', 'false'); if (!silent && menuReturn && menuReturn.focus) menuReturn.focus(); }
+function setPresenting(on) { document.body.classList.toggle('presenting', on); $('#btnPresent').setAttribute('aria-pressed', on ? 'true' : 'false'); if (on) toast('Modo apresentação: use as setas ← → ou os botões. Esc sai.'); }
+function toggleFull() {
+  const msg = 'Seu visualizador não permite tela cheia aqui. O modo Apresentar funciona do mesmo jeito; para tela cheia de verdade, abra o arquivo no navegador do PC e aperte F11.';
+  try {
+    if (document.fullscreenElement) { document.exitFullscreen(); return; }
+    const el = document.documentElement;
+    if (!document.fullscreenEnabled || !el.requestFullscreen) { toast(msg, 7000); return; }
+    const r = el.requestFullscreen(); if (r && r.catch) r.catch(() => toast(msg, 7000));
+  } catch (e) { toast(msg, 7000); }
+}
+function doPrint() {
+  let fired = false; const mark = () => { fired = true; };
+  window.addEventListener('beforeprint', mark, { once: true });
+  try { window.print(); } catch (e) { /* tratado abaixo */ }
+  setTimeout(() => { window.removeEventListener('beforeprint', mark); if (!fired) toast('Seu visualizador bloqueou a impressão. Baixe o arquivo .html e abra no Chrome do PC, depois aperte Ctrl+P e escolha "Salvar como PDF". O PDF pronto também foi enviado.', 9000); }, 700);
+}
+function initChrome() {
+  $('#btnPrev').addEventListener('click', () => { if (currentIdx > 0) goIdx(currentIdx - 1); });
+  $('#btnNext').addEventListener('click', () => { if (currentIdx < PAGES.length - 1) goIdx(currentIdx + 1); });
+  $('#presPrev').addEventListener('click', () => { if (currentIdx > 0) goIdx(currentIdx - 1); });
+  $('#presNext').addEventListener('click', () => { if (currentIdx < PAGES.length - 1) goIdx(currentIdx + 1); });
+  $('#btnMenu').addEventListener('click', openMenu); $('#menuClose').addEventListener('click', () => closeMenu());
+  $('#btnPresent').addEventListener('click', () => setPresenting(!document.body.classList.contains('presenting')));
+  $('#presExit').addEventListener('click', () => setPresenting(false)); $('#presFull').addEventListener('click', toggleFull); $('#btnFull').addEventListener('click', toggleFull);
+  $('#btnPrint').addEventListener('click', doPrint); $('#btnPrint2').addEventListener('click', doPrint);
+  window.addEventListener('hashchange', () => { vhash = null; route(); });
+  window.addEventListener('popstate', () => { vhash = null; route(); });
+  document.addEventListener('click', e => {
+    const a = e.target.closest && e.target.closest('a[href^="#/"]');
+    if (!a || e.defaultPrevented || e.button || e.ctrlKey || e.metaKey || e.shiftKey || a.target === '_blank') return;
+    if (a.hasAttribute('data-sec-link')) return;
+    e.preventDefault(); navigate(a.getAttribute('href'));
+  });
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    const t = e.target, tag = t && t.tagName;
+    if (e.key === 'Escape') { if (!$('#menuPanel').hidden) closeMenu(); else if (document.body.classList.contains('presenting')) setPresenting(false); return; }
+    if (!$('#menuPanel').hidden) return;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (t && t.closest && t.closest('[role="tablist"]'))) return;
+    const k = e.key;
+    if (k === 'ArrowRight' || k === 'ArrowLeft') {
+      const h = pageHandlers[PAGES[currentIdx].id];
+      if (h && h.arrow) { e.preventDefault(); h.arrow(k === 'ArrowRight' ? 1 : -1); return; }
+      e.preventDefault(); if (k === 'ArrowRight' && currentIdx < PAGES.length - 1) goIdx(currentIdx + 1); else if (k === 'ArrowLeft' && currentIdx > 0) goIdx(currentIdx - 1);
+    } else if (k === 'm' || k === 'M') { e.preventDefault(); openMenu(); }
+    else if (k === 'f' || k === 'F') { e.preventDefault(); toggleFull(); }
+    else if (k === 'p' || k === 'P') { e.preventDefault(); setPresenting(!document.body.classList.contains('presenting')); }
+  });
+}
+
+/* ---------- capa ---------- */
+function initCover() {
+  const nomes = EQUIPE.slice().sort((a, b) => a.localeCompare(b, 'pt-BR', { sensitivity: 'base' }));
+  $('#teamNames').textContent = nomes.length > 1 ? nomes.slice(0, -1).join(', ') + ' e ' + nomes[nomes.length - 1] : nomes.join('');
+  const fig = $('#heroFig'), tag = $('#figTag'), names = ['COSTAS RETAS', 'COSTAS INCLINADAS', 'COSTAS DE LADO']; let k = 1;
+  if (!reduceMotion()) setInterval(() => { k = k % 3 + 1; fig.dataset.back = String(k); tag.textContent = names[k - 1]; }, 2800);
+}
+
+/* ---------- conteúdo ---------- */
+function initContent() {
+  $('#partes').innerHTML = PARTES.map((p, i) => '<article class="card parte"><span class="bigicon" aria-hidden="true">' + (i + 1) + '</span><h2>' + esc(p.titulo) + '</h2><p>' + esc(p.txt) + '</p><ul>' + p.ops.map(o => '<li>' + esc(o) + '</li>').join('') + '</ul></article>').join('');
+  $('#passos').innerHTML = PASSOS.map(s => '<li><strong>' + esc(s[0]) + '</strong><span>' + cite(esc(s[1])) + '</span></li>').join('');
+  $('#niveis').innerHTML = NIVEIS.map(n => '<article class="card nivel cat' + n.n + '"><div class="cat-num">' + n.n + '</div><h2>' + esc(n.titulo) + '<span class="tagc">· ' + n.cor + '</span></h2><p>' + esc(n.txt) + '</p><p><strong>' + esc(n.acao) + '</strong></p></article>').join('');
+  $('#exemplos').innerHTML = EXEMPLOS.map(e => { const v = actionCategory(e.cod[0], e.cod[1], e.cod[2], e.cod[3]); return '<article class="card ex cat' + v + '"><p style="margin:0">' + esc(e.t) + '</p><span class="lv"><span class="cell">' + v + '</span>Nível ' + v + ' · ' + esc(NIVEIS[v - 1].titulo) + '</span></article>'; }).join('');
+  $('#pros').innerHTML = PROS.map(x => '<li>' + cite(esc(x)) + '</li>').join('');
+  $('#contras').innerHTML = CONTRAS.map(x => '<li>' + cite(esc(x)) + '</li>').join('');
+  $('#tecno').innerHTML = TECNO.map(t => '<article class="card"><span class="badge ' + (t.b === 'Futuro' ? 'fut' : 'ok') + '">' + t.b + '</span><h3 style="margin-top:10px">' + esc(t.t) + '</h3><p class="muted" style="margin:0">' + cite(esc(t.d)) + '</p></article>').join('');
+  // fisioterapia
+  const tabs = $('#fisioTabs'), panels = $('#fisioPanels');
+  tabs.innerHTML = FISIO.map((f, i) => '<button type="button" role="tab" id="ft-' + f.id + '" aria-selected="' + (i === 0) + '" aria-controls="fp-' + f.id + '">' + esc(f.titulo) + '</button>').join('');
+  const ul = a => '<ul>' + a.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>';
+  panels.innerHTML = FISIO.map((f, i) => '<div class="card tabpanel" role="tabpanel" id="fp-' + f.id + '" aria-labelledby="ft-' + f.id + '"' + (i ? ' hidden' : '') + '><h2>' + esc(f.titulo) + '</h2><div class="grid"><div><h3>O que observar</h3>' + ul(f.obs) + '</div><div><h3>Ideias de melhoria</h3>' + ul(f.melhoria) + '</div><div><h3>Papel do fisioterapeuta</h3><p>' + esc(f.papel) + '</p></div></div><div class="callout warn" style="margin:12px 0 0"><strong>Cuidado:</strong> ' + esc(f.limite) + '</div></div>').join('');
+  tabs.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; $$('button', tabs).forEach(x => x.setAttribute('aria-selected', String(x === b))); $$('.tabpanel', panels).forEach(p => { p.hidden = p.id !== b.getAttribute('aria-controls'); }); const pn = document.getElementById(b.getAttribute('aria-controls')); if (pn && window.innerWidth <= 860) pn.scrollIntoView({ block: 'nearest', behavior: smooth() }); });
+  tabKeys(tabs);
+  // referências
+  const groups = []; REFS.forEach(r => { if (groups.indexOf(r.grupo) < 0) groups.push(r.grupo); });
+  $('#refList').innerHTML = groups.map(g => '<h2 style="margin-top:22px">' + esc(g) + '</h2><ul class="refs">' + REFS.filter(r => r.grupo === g).map(r => {
+    const links = [];
+    if (r.doi) links.push('DOI: <a href="' + r.url + '" target="_blank" rel="noopener noreferrer">' + r.doi + '</a>'); else links.push('<a href="' + r.url + '" target="_blank" rel="noopener noreferrer">' + (r.urlLabel || r.url) + '</a>');
+    if (r.url2) links.push('<a href="' + r.url2 + '" target="_blank" rel="noopener noreferrer">' + r.url2Label + '</a>');
+    return '<li id="ref-' + r.id + '" tabindex="-1"><span class="n">[' + r.id + ']</span><div>' + r.cit + '<div class="meta">Usada para: ' + esc(r.uso) + '<br>' + links.join(' · ') + '</div></div></li>';
+  }).join('') + '</ul>').join('');
+  // o resto das citações escritas no HTML estático
+  const main = $('#main'); $$('.page', main).forEach(sec => { if (sec.id !== 'page-referencias') sec.querySelectorAll('p,li,.callout').forEach(el => { if (el.innerHTML.indexOf('[[') >= 0) el.innerHTML = cite(el.innerHTML); }); });
+  const rc = $('#page-referencias .callout'); if (rc) rc.innerHTML = cite(rc.innerHTML);
+}
+
+/* ---------- quiz ---------- */
+function initQuiz() {
+  const root = $('#quizBox'); let st = null; const L = 'ABCD';
+  function start() { st = { i: 0, score: 0, hits: 0, answered: false, pick: -1, done: false, wrong: [] }; render(); }
+  function render() {
+    const n = QUIZ.length;
+    if (st.done) {
+      const p = Math.round(st.hits / n * 100); const msg = p === 100 ? 'Perfeito! Você domina o conteúdo.' : p >= 60 ? 'Muito bem! Falta pouco para dominar tudo.' : 'Que tal rever os flashcards e tentar de novo?';
+      root.innerHTML = '<h2>Resultado final</h2><div class="result-big">' + st.hits + '<span style="font-size:1.3rem;color:var(--muted)"> de ' + n + ' acertos</span></div><p style="margin-top:10px">' + msg + '</p>' +
+        (st.wrong.length ? '<details open><summary>Para revisar</summary>' + st.wrong.map(i => '<p><strong>' + esc(QUIZ[i].q) + '</strong><br>Resposta: ' + esc(QUIZ[i].opts[QUIZ[i].a]) + '</p>').join('') + '</details>' : '') +
+        '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px"><button class="btn big primary" type="button" data-act="restart">Jogar de novo</button><a class="btn big" href="#/flashcards">Ver flashcards</a></div>'; return;
+    }
+    const q = QUIZ[st.i];
+    let h = '<div class="hud"><div class="stat">Pergunta <b>' + (st.i + 1) + '/' + n + '</b></div><div class="stat">Acertos <b id="qHits">' + st.hits + '</b></div></div><div class="bar-prog" aria-hidden="true"><i style="width:' + ((st.i + (st.answered ? 1 : 0)) / n * 100) + '%"></i></div>' +
+      '<p class="quiz-q">' + esc(q.q) + '</p><div class="options">';
+    q.opts.forEach((o, k) => {
+      let cls = 'opt', mark = '';
+      if (st.answered) { cls += ' locked'; if (k === q.a) { cls += ' right'; mark = '<span class="mark" style="color:var(--c1)">✓</span>'; } else if (k === st.pick) { cls += ' wrong'; mark = '<span class="mark" style="color:var(--c4)">✗</span>'; } }
+      h += '<button type="button" class="' + cls + '" data-act="pick" data-k="' + k + '"' + (st.answered ? ' aria-disabled="true"' : '') + '><span class="ltr">' + L[k] + '</span><span>' + esc(o) + '</span>' + mark + '</button>';
+    });
+    h += '</div>';
+    if (st.answered) h += '<div class="feedback ' + (st.pick === q.a ? 'ok' : 'bad') + '" role="status"><strong>' + (st.pick === q.a ? 'Correto!' : 'Quase! A resposta certa está marcada.') + '</strong><br>' + cite(esc(q.ex)) + '</div><div style="margin-top:14px"><button class="btn big primary" type="button" data-act="next">' + (st.i === n - 1 ? 'Ver resultado' : 'Próxima →') + '</button></div>';
+    root.innerHTML = h;
+    if (st.answered) { const nb = $('[data-act="next"]', root); if (nb) nb.focus(); }
+  }
+  root.addEventListener('click', e => {
+    const b = e.target.closest('[data-act]'); if (!b) return; const act = b.dataset.act;
+    if (act === 'restart') { start(); return; }
+    if (st.done) return;
+    if (act === 'pick') { if (st.answered) return; st.answered = true; st.pick = Number(b.dataset.k); if (st.pick === QUIZ[st.i].a) st.hits++; else st.wrong.push(st.i); render(); }
+    else if (act === 'next') { if (!st.answered) return; if (st.i >= QUIZ.length - 1) st.done = true; else { st.i++; st.answered = false; st.pick = -1; } render(); }
+  });
+  start();
+}
+
+/* ---------- flashcards ---------- */
+function initFlashcards() {
+  let deck = CARDS.map(c => ({ q: c.q, a: c.a })); let pos = 0, flipped = false;
+  const stage = $('#fcStage');
+  function draw() {
+    const n = deck.length; if (pos >= n) pos = n - 1; if (pos < 0) pos = 0;
+    const c = deck[pos];
+    $('#fcCount').textContent = 'Cartão ' + (pos + 1) + ' de ' + n;
+    $('#fcProg').style.width = ((pos + 1) / n * 100) + '%';
+    $('#fcFlip').textContent = flipped ? 'Ver pergunta' : 'Ver resposta';
+    stage.innerHTML = '<button type="button" class="fc-card' + (flipped ? ' flipped' : '') + '" id="fcCard" aria-label="' + (flipped ? 'Resposta exibida. Pressione para voltar à pergunta.' : 'Pergunta exibida. Pressione para ver a resposta.') + '"><span class="fc-inner">' +
+      '<span class="fc-face front" aria-hidden="' + flipped + '"><span class="tag">pergunta</span><span class="txt">' + esc(c.q) + '</span><span class="hint">Clique para ver a resposta</span></span>' +
+      '<span class="fc-face back" aria-hidden="' + !flipped + '"><span class="tag">resposta</span><span class="txt">' + cite(esc(c.a)) + '</span><span class="hint">Clique para voltar</span></span></span></button>';
+  }
+  function move(d) { const n = deck.length; pos = (pos + d + n) % n; flipped = false; draw(); }
+  stage.addEventListener('click', e => { if (e.target.closest('#fcCard') && !e.target.closest('a')) { flipped = !flipped; draw(); const c = $('#fcCard'); if (c) c.focus(); } });
+  $('#fcPrev').addEventListener('click', () => move(-1)); $('#fcNext').addEventListener('click', () => move(1));
+  $('#fcFlip').addEventListener('click', () => { flipped = !flipped; draw(); });
+  $('#fcShuffle').addEventListener('click', () => { deck = shuffle(deck); pos = 0; flipped = false; draw(); toast('Cartões embaralhados.'); });
+  $('#fcReset').addEventListener('click', () => { deck = CARDS.map(c => ({ q: c.q, a: c.a })); pos = 0; flipped = false; draw(); toast('Baralho recomeçado com os ' + CARDS.length + ' cartões.'); });
+  $('#fcForm').addEventListener('submit', e => {
+    e.preventDefault(); const q = $('#fcQ').value.trim(), a = $('#fcA').value.trim();
+    if (!q || !a) { toast('Preencha a pergunta e a resposta.'); return; }
+    deck.push({ q, a }); $('#fcQ').value = ''; $('#fcA').value = ''; pos = deck.length - 1; flipped = false; draw(); toast('Cartão da turma adicionado.');
+  });
+  pageHandlers.flashcards = { arrow(d) { move(d); } };
+  $('#fcPrint').innerHTML = CARDS.map(c => '<li><strong>' + esc(c.q) + '</strong> ' + cite(esc(c.a)) + '</li>').join('');
+  draw();
+}
+
+/* ---------- páginas novas: posturas, aplicação e resultados ---------- */
+const fmtPct = n => (Math.round(n * 10) / 10).toFixed(1).replace('.', ',');
+function barsHTML(rows) {
+  return rows.map(r => '<div class="row cat' + r.c + '"><span>Nível ' + r.c + '</span><div class="track"><i style="width:' + Math.max(0, Math.min(100, r.v)) + '%"></i></div><span>' + r.txt + '</span></div>').join('');
+}
+function initNew() {
+  const fig = (x, extra) => '<figure class="fig' + (extra && extra.cls ? ' ' + extra.cls : '') + '"><div class="figsvg">' + figSVG(x.p) + '</div><figcaption><strong>' + esc(x.t) + '</strong><span>' + esc(x.d) + '</span>' + (extra && extra.lv ? extra.lv : '') + '</figcaption></figure>';
+  $('#figCostas').innerHTML = FIG_COSTAS.map(x => fig(x)).join('');
+  $('#figBracos').innerHTML = FIG_BRACOS.map(x => fig(x)).join('');
+  $('#figPernas').innerHTML = FIG_PERNAS.map(x => fig(x)).join('');
+  $('#casos').innerHTML = CASOS.map(x => { const v = actionCategory(x.cod[0], x.cod[1], x.cod[2], x.cod[3]); return fig(x, { cls: 'case cat' + v, lv: '<span class="lv"><span class="cell">' + v + '</span>Nível ' + v + ' · ' + esc(NIVEIS[v - 1].titulo) + '</span>' }); }).join('');
+
+  const onde = [
+    ['Indústria do aço', 'Foi onde nasceu: na empresa Ovako, na Finlândia. [[1]]'],
+    ['Construção civil', 'Também foi usado em programa de computador para analisar posturas em obras. [[3]]'],
+    ['Saúde, petróleo e agricultura', 'A fonte institucional adotada cita aplicações nessas áreas. [[4]]'],
+    ['Fundição (caso no Brasil)', 'Análise de postos de esmerilhamento, com propostas de melhoria. [[13]]'],
+    ['Estufas agrícolas (caso na Espanha)', 'Trabalhadores de estufas foram filmados e as posturas, classificadas pelo OWAS. [[14]]']
+  ];
+  $('#onde').innerHTML = onde.map((o, i) => '<article class="card"><span class="bigicon" aria-hidden="true">' + (i + 1) + '</span><h3>' + esc(o[0]) + '</h3><p class="muted" style="margin:0">' + cite(esc(o[1])) + '</p></article>').join('');
+
+  const passos = [
+    ['Conversar e combinar', 'Explique ao trabalhador o que será feito, ouça como ele descreve a tarefa e peça autorização para filmar. [[4]]'],
+    ['Observar e filmar', 'Escolha ângulos em que tronco, braços e pernas apareçam bem. Filmar permite rever a tarefa depois. [[4]]'],
+    ['Marcar a postura de tempos em tempos', 'A fonte cita 20 a 40 minutos de observação, com um registro a cada 30 a 60 segundos. Em 30 minutos, com um registro a cada 30 segundos, são 60 registros. [[4]]'],
+    ['Descobrir o nível de cada registro', 'Para cada postura, anote costas, braços, pernas e peso e procure o nível na tabela do método. [[4]]'],
+    ['Contar e priorizar', 'Veja quantos registros caíram em cada nível e quais posturas aparecem mais nos níveis 3 e 4.'],
+    ['Propor mudanças e reavaliar', 'Sugira melhorias no posto, nos equipamentos e na organização. Depois, repita a observação para comparar. [[4]]']
+  ];
+  $('#aplicPassos').innerHTML = passos.map(x => '<li><strong>' + esc(x[0]) + '</strong><span>' + cite(esc(x[1])) + '</span></li>').join('');
+
+  let counts = [0, 0, 0, 0];
+  $('#ficha').innerHTML = '<thead><tr><th>Momento</th><th>Costas</th><th>Braços</th><th>Pernas</th><th>Peso</th><th>Nível</th></tr></thead><tbody>' + FICHA.map(r => {
+    const v = actionCategory(r.cod[0], r.cod[1], r.cod[2], r.cod[3]); counts[v - 1]++;
+    return '<tr class="cat' + v + '"><td>' + r.m + '</td><td>' + esc(r.costas) + '</td><td>' + esc(r.bracos) + '</td><td>' + esc(r.pernas) + '</td><td>' + esc(r.peso) + '</td><td><span class="cell">' + v + '</span></td></tr>';
+  }).join('') + '</tbody>';
+  const nF = FICHA.length;
+  $('#fichaResumo').innerHTML = '<div class="card"><h3>Depois de contar</h3><div class="bars wide">' + barsHTML(counts.map((n, i) => ({ c: i + 1, v: n / nF * 100, txt: n + ' de ' + nF + ' (' + Math.round(n / nF * 100) + '%)' }))) + '</div>' +
+    '<p class="muted" style="margin:10px 0 0">São só ' + nF + ' linhas, para ilustrar. Numa avaliação real seriam dezenas de registros.</p></div>';
+
+  $('#relatorio').innerHTML = ['Descrição da tarefa, do posto e de quem foi observado', 'Data, local e como foi observado (ao vivo, foto ou vídeo)', 'Duração da observação e intervalo entre os registros', 'Número de registros e quantos caíram em cada nível', 'Posturas mais frequentes nos níveis 3 e 4', 'Propostas de melhoria, em ordem de prioridade', 'Limites da avaliação (o que não foi observado)', 'Data prevista para reavaliar'].map(x => '<li>' + esc(x) + '</li>').join('');
+  const ciclo = [['Avaliar', 'Registrar as posturas e descobrir o nível de cada uma.'], ['Melhorar', 'Mudar o posto, os equipamentos ou a organização, começando pelo que mais pesa.'], ['Reavaliar', 'Repetir o mesmo protocolo e comparar a proporção de posturas nos níveis 3 e 4. [[4]]']];
+  $('#ciclo').innerHTML = ciclo.map((c, i) => '<article class="card"><span class="bigicon" aria-hidden="true">' + (i + 1) + '</span><h3>' + c[0] + '</h3><p class="muted" style="margin:0">' + cite(esc(c[1])) + '</p></article>').join('');
+
+  // resultados
+  const F = ESTUDO_FUNDICAO, nFund = F.antes.reduce((a, b) => a + b, 0);
+  const rowsF = arr => arr.map((n, i) => ({ c: i + 1, v: n / nFund * 100, txt: n + ' de ' + nFund + ' (' + Math.round(n / nFund * 100) + '%)' }));
+  $('#barFundAntes').innerHTML = barsHTML(rowsF(F.antes)); $('#barFundDepois').innerHTML = barsHTML(rowsF(F.depois));
+  const critA = F.antes[2] + F.antes[3], critD = F.depois[2] + F.depois[3];
+  $('#statFundicao').innerHTML = '<li><b>' + critA + ' → ' + critD + '</b><span>posturas críticas (níveis 3 e 4) em ' + nFund + '</span></li><li><b>' + Math.round(critA / nFund * 100) + '% → ' + Math.round(critD / nFund * 100) + '%</b><span>de posturas críticas</span></li><li><b>78%</b><span>dos 50 operadores consultados relataram desconforto antes das mudanças, mais na coluna</span></li>';
+  $('#barEstufa').innerHTML = barsHTML(ESTUDO_ESTUFA.map((v, i) => ({ c: i + 1, v, txt: v.toFixed(2).replace('.', ',') + '%' })));
+  const c34 = ESTUDO_ESTUFA[2] + ESTUDO_ESTUFA[3];
+  $('#estufaTexto').innerHTML = cite('Somados, os níveis 3 e 4 (corrigir logo ou já) ficaram em <strong>' + fmtPct(c34) + '%</strong> das posturas, quase 3 em cada 10. [[14]]');
+  $('#statConcord').innerHTML = '<li><b>29,2%</b><span>concordância entre OWAS e RULA</span></li><li><b>48,2%</b><span>concordância entre RULA e REBA</span></li><li><b>301</b><span>posturas analisadas</span></li>';
+  const ler = ['O caso 1 compara antes e depois no mesmo posto, sem teste estatístico. O caso 2 mostra só um retrato das posturas, sem comparação. [[13]][[14]]', 'Nos dois casos há poucos trabalhadores e um único local: não dá para generalizar para qualquer empresa.', 'Menos posturas críticas não significa, sozinho, menos dor ou menos afastamentos. Isso precisa ser medido à parte. [[11]]', 'Os números de um método não se transferem para outro: OWAS, RULA e REBA dão resultados diferentes. [[5]]'];
+  $('#comoLer').innerHTML = ler.map(x => '<li>' + cite(esc(x)) + '</li>').join('');
+  $('#medir').innerHTML = ['Defina antes: tarefa, posto, tempo de observação e intervalo entre os registros.', 'Calcule a proporção de registros nos níveis 3 e 4 antes e depois da mudança.', 'Use o mesmo protocolo na reavaliação: mesma tarefa, mesmo intervalo, mesmo cuidado ao observar.', 'Acompanhe também as queixas dos trabalhadores, com um questionário simples, e o tempo de exposição.', 'Registre o que mudou no posto, para saber o que provocou a melhora.'].map(x => '<li>' + esc(x) + '</li>').join('');
+
+  // citações escritas no HTML das páginas novas
+  ['page-posturas', 'page-aplicacao', 'page-resultados'].forEach(id => { $$('p,li,.callout,h2', $('#' + id)).forEach(el => { if (el.innerHTML.indexOf('[[') >= 0) el.innerHTML = cite(el.innerHTML); }); });
+}
+
+/* ---------- navegação extra: chips, topo e voltar ---------- */
+function initExtraNav() {
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[data-sec-link]'); if (!a) return;
+    const el = document.getElementById(a.dataset.secLink); if (!el) return;
+    e.preventDefault(); scrollToSection(el); vhash = a.getAttribute('href'); curHash = vhash; try { history.replaceState(null, '', vhash); } catch (err) { /* ignora */ }
+  });
+  const top = $('#toTop');
+  window.addEventListener('scroll', () => { curY = window.scrollY; top.hidden = curY < 500; }, { passive: true });
+  top.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: smooth() }); });
+  $('#refBack').addEventListener('click', () => { if (!cameFrom) return; const c = cameFrom; cameFrom = null; pendingScroll = c.y; if (readHash() === c.hash) { jump(c.y); pendingScroll = null; } else navigate(c.hash); });
+}
+
+function init() {
+  buildNav(); initChrome(); initCover(); initContent(); initNew(); initExtraNav(); initQuiz(); initFlashcards();
+  route();
+  window.__owas = { ready: true };
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+
+</script>
+</body>
+</html>
